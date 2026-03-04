@@ -116,8 +116,17 @@ const menuPanelStyleMobile = {
   ...menuPanelStyle,
   top: "auto",
   bottom: "56px",
+  left: 0,
+  right: 0,
+  minWidth: "auto",
+  padding: "1.75rem 1.5rem",
+  gap: "1.5rem",
   boxShadow: "0 -4px 12px rgba(0,0,0,0.3)",
 };
+
+/* Itens do menu mobile: área de toque maior */
+const menuPanelItemMobileStyle = { padding: "0.5rem 0", fontSize: "1rem" };
+const menuPanelButtonMobileStyle = { ...logoutButtonStyle, padding: "0.6rem 1rem", fontSize: "1rem" };
 
 /* Painel de idiomas no mobile: largura total e bandeiras centralizadas/maiores */
 const languagePanelStyleMobile = {
@@ -195,24 +204,24 @@ function Navbar() {
 
   const menuPanelContent = (
     <>
+      {isLoggedIn && user?.name && (
+        <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "1rem", padding: "0.5rem 0" }}>
+          {t("common.helloUser", { name: user.name })}
+        </span>
+      )}
       <a
         href={apiDocsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        style={apiDocsLinkStyle}
+        style={{ ...apiDocsLinkStyle, ...menuPanelItemMobileStyle }}
         title={t("common.apiDocs")}
         onClick={() => setMenuOpen(false)}
       >
         {docsIcon}
         {t("common.apiDocs")}
       </a>
-      {isLoggedIn && user?.name && (
-        <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.95rem" }}>
-          {t("common.helloUser", { name: user.name })}
-        </span>
-      )}
       {isLoggedIn && (
-        <button type="button" style={logoutButtonStyle} onClick={handleLogout} title={t("common.logout")}>
+        <button type="button" style={menuPanelButtonMobileStyle} onClick={handleLogout} title={t("common.logout")}>
           {logoutIcon}
           {t("common.logout")}
         </button>
