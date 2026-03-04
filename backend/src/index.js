@@ -10,6 +10,7 @@ const express = require("express");
 const cors = require("cors"); // Middleware para segurança de CORS
 const helmet = require("helmet"); // Middleware para segurança
 const morgan = require("morgan"); // Middleware para logging
+const { ERROR_KEYS } = require("./config/constants");
 const routes = require("./routes");
 const userRepository = require("./repositories/user.repository");
 
@@ -27,7 +28,7 @@ app.use((err, req, res, next) => {
     console.error(err);
   }
   // Define o status 500 e retorna o erro interno do servidor
-  res.status(500).json({ error: "internal.server_error" });
+  res.status(500).json({ error: ERROR_KEYS.INTERNAL_SERVER_ERROR });
 });
 
 userRepository.ensureDefaultAdmin();

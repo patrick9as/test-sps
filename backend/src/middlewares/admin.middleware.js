@@ -1,3 +1,4 @@
+const { ERROR_KEYS } = require("../config/constants");
 const { sendError } = require("../utils/errors");
 
 /**
@@ -11,7 +12,7 @@ function requireAdminForOther(req, res, next) {
   const isSelf = targetId === currentUserId;
   if (isSelf) return next();
   if (req.user?.type === "admin") return next();
-  return sendError(res, 403, "auth.forbidden");
+  return sendError(res, 403, ERROR_KEYS.AUTH_FORBIDDEN);
 }
 
 module.exports = { requireAdminForOther };
