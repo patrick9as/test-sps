@@ -5,6 +5,7 @@ const { ADMIN_EMAIL } = require("../config/constants");
 const DEFAULT_ADMIN_PASSWORD_PLAIN = "1234";
 
 /** @type {Map<string, { id: string; name: string; email: string; type: string; passwordHash: string }>} */
+// Armazena os usuários em um Map
 const store = new Map();
 
 /**
@@ -124,9 +125,12 @@ function remove(id) {
  * @param {string} [excludeId]
  */
 function emailExists(email, excludeId) {
-  const found = Array.from(store.values()).find(
-    (u) => u.email === email && u.id !== excludeId
-  );
+  const found = 
+  
+    Array
+      .from(store.values())
+      .find((u) => u.email === email && u.id !== excludeId);
+
   return !!found;
 }
 

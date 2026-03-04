@@ -1,8 +1,9 @@
 require("dotenv").config();
 
+// Email do admin padrão
 const ADMIN_EMAIL = "admin@spsgroup.com.br";
 
-/** Chaves de erro/mensagem para i18n (frontend). */
+// Chaves de erro/mensagem para i18n (frontend).
 const ERROR_KEYS = {
   AUTH_INVALID_CREDENTIALS: "auth.invalid_credentials",
   AUTH_INVALID_TOKEN: "auth.invalid_token",
@@ -23,6 +24,7 @@ const ERROR_KEYS = {
   INTERNAL_SERVER_ERROR: "internal.server_error",
 };
 
+// Configurações do JWT
 const getJwtSecret = () => {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("JWT_SECRET is required");
