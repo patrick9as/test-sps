@@ -113,7 +113,7 @@ A aplicação tem **dois modos de execução**. Escolha um:
      npm run docker:up
      ```
 
-     (Ou `npm run docker:up:d` para rodar o Postgres em background.)
+     Ou use **`npm run docker:up:d`** para rodar o Postgres em background (recomendado: fica desacoplado do terminal e você pode rodar os próximos comandos no mesmo terminal).
 
   2. **Depois**, em outro terminal (ou no mesmo, se usou `docker:up:d`), subir a aplicação em modo Postgres:
 
@@ -200,7 +200,7 @@ Certifique-se de que o `frontend/.env` está configurado com `VITE_SERVER_URL` a
 | `npm run dev:memory`  | raiz      | Idem: backend e frontend com **dados em memória**        |
 | **Modo Postgres**     |           |                                                          |
 | `npm run docker:up`   | raiz      | Sobe o Postgres (primeiro plano; porta 5433). Rode **antes** de `dev:postgres` |
-| `npm run docker:up:d` | raiz      | Sobe o Postgres em background                            |
+| `npm run docker:up:d` | raiz      | Sobe o Postgres em background (recomendado: desacopla do terminal para rodar os próximos comandos no mesmo) |
 | `npm run dev:postgres`| raiz      | Sobe backend e frontend com **PostgreSQL** (Postgres já deve estar no ar) |
 | **Testes**            |           |                                                          |
 | `npm test`            | backend   | Roda os testes unitários (Jest) do backend (na pasta `backend`) |
