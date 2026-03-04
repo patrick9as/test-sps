@@ -38,6 +38,9 @@
   "users.typeAdmin": "Administrador",
   "users.typeUser": "Usuário",
   "users.newPasswordOptional": "Nova senha (deixe em branco para não alterar)",
+  "users.confirmNewPassword": "Confirmar nova senha",
+  "users.changePassword": "Alterar senha",
+  "users.passwordMismatch": "As senhas não coincidem.",
   "common.helloUser": "Bem-vindo, {{name}}!",
   "common.logout": "Sair"
 }

@@ -35,6 +35,12 @@ const buttonStyle = {
   fontFamily: "inherit",
   fontSize: "1rem",
 };
+const secondaryButtonStyle = {
+  ...buttonStyle,
+  backgroundColor: "transparent",
+  color: "#2f73b2",
+  border: "1px solid #2f73b2",
+};
 const linkStyle = { color: "#2f73b2", textDecoration: "none", fontSize: "0.9rem" };
 
 export async function userLoader({ params }) {
@@ -57,7 +63,9 @@ function EditUser() {
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [type, setType] = useState(user?.type ?? "user");
+  const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const isAdmin = authUser?.type === "admin";
   const canChangeType = isAdmin;
@@ -76,6 +84,9 @@ function EditUser() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (showPasswordFields && (password || confirmPassword) && password !== confirmPassword) {
+      return;
+    }
     const body = { name, email, type };
     if (password.trim()) body.password = password;
     try {
@@ -137,17 +148,45 @@ function EditUser() {
           </select>
         </div>
         <div style={formGroupStyle}>
-          <label htmlFor="user-edit-password" style={labelStyle}>
-            {t("users.newPasswordOptional")}
-          </label>
-          <input
-            id="user-edit-password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-            style={inputStyle}
-          />
+          {!showPasswordFields ? (
+            <button
+              type="button"
+              style={secondaryButtonStyle}
+              onClick={() => setShowPasswordFields(true)}
+            >
+              {t("users.changePassword")}
+            </button>
+          ) : (
+            <>
+              <label htmlFor="user-edit-password" style={labelStyle}>
+                {t("users.newPasswordOptional")}
+              </label>
+              <input
+                id="user-edit-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
+                style={inputStyle}
+              />
+              <label htmlFor="user-edit-confirm-password" style={{ ...labelStyle, marginTop: "0.75rem" }}>
+                {t("users.confirmNewPassword")}
+              </label>
+              <input
+                id="user-edit-confirm-password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="new-password"
+                style={inputStyle}
+              />
+              {showPasswordFields && (password || confirmPassword) && password !== confirmPassword && (
+                <p style={{ color: "#c00", marginTop: "0.5rem", fontSize: "0.9rem" }}>
+                  {t("users.passwordMismatch")}
+                </p>
+              )}
+            </>
+          )}
         </div>
         <button type="submit" style={buttonStyle}>
           {t("users.save")}
