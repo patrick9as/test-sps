@@ -7,7 +7,6 @@ import { useLanguage } from "../contexts/LanguageContext";
 
 const pageStyle = {
   padding: "0.5rem 0",
-  minHeight: "100vh",
   boxSizing: "border-box",
   display: "flex",
   flexDirection: "column",
@@ -19,7 +18,16 @@ const contentWrapperStyle = {
   maxWidth: "400px",
 };
 
-const titleStyle = { marginTop: 0, marginBottom: "1.5rem" };
+const titleStyle = { marginTop: 0, marginBottom: 0 };
+
+const headerRowStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "1.5rem",
+  flexWrap: "wrap",
+  gap: "0.75rem",
+};
 
 const formGroupStyle = { marginBottom: "1rem" };
 const labelStyle = { display: "block", marginBottom: "0.25rem" };
@@ -43,6 +51,11 @@ const buttonStyle = {
   fontFamily: "inherit",
   fontSize: "1rem",
 };
+const submitButtonStyle = {
+  ...buttonStyle,
+  padding: "0.65rem 1.75rem",
+  fontSize: "1.1rem",
+};
 const secondaryButtonStyle = {
   ...buttonStyle,
   backgroundColor: "transparent",
@@ -50,6 +63,8 @@ const secondaryButtonStyle = {
   border: "1px solid #2f73b2",
 };
 const linkStyle = { color: "#2f73b2", textDecoration: "none", fontSize: "0.9rem" };
+
+const buttonsCenterStyle = { display: "flex", justifyContent: "center" };
 
 function getPasswordRequirements(value) {
   const s = value || "";
@@ -163,8 +178,13 @@ function EditUser() {
   return (
     <div style={pageStyle}>
       <div style={contentWrapperStyle}>
-        <h1 style={titleStyle}>{t("users.editTitle")}</h1>
         <form onSubmit={handleSubmit}>
+          <div style={headerRowStyle}>
+            <h1 style={titleStyle}>{t("users.editTitle")}</h1>
+            <button type="submit" style={submitButtonStyle}>
+              {t("users.save")}
+            </button>
+          </div>
         <div style={formGroupStyle}>
           <label htmlFor="user-edit-name" style={labelStyle}>
             {t("users.name")}
@@ -208,13 +228,15 @@ function EditUser() {
         </div>
         <div style={{ ...formGroupStyle, marginTop: "2rem" }}>
           {!showPasswordFields ? (
-            <button
-              type="button"
-              style={secondaryButtonStyle}
-              onClick={() => setShowPasswordFields(true)}
-            >
-              {t("users.changePassword")}
-            </button>
+            <div style={buttonsCenterStyle}>
+              <button
+                type="button"
+                style={secondaryButtonStyle}
+                onClick={() => setShowPasswordFields(true)}
+              >
+                {t("users.changePassword")}
+              </button>
+            </div>
           ) : (
             <>
               <label htmlFor="user-edit-password" style={labelStyle}>
@@ -294,9 +316,6 @@ function EditUser() {
             </>
           )}
         </div>
-        <button type="submit" style={buttonStyle}>
-          {t("users.save")}
-        </button>
       </form>
       </div>
     </div>
