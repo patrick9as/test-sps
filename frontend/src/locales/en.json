@@ -26,6 +26,7 @@
   "login.passwordLabel": "Password",
   "login.submit": "Sign in",
   "login.errorGeneric": "Could not sign in. Please try again.",
+  "login.attemptsRemaining": "Attempts remaining: {{count}}",
   "users.pageTitle": "Users",
   "users.loading": "Loading...",
   "users.empty": "No users found.",

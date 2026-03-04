@@ -54,6 +54,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [remainingAttempts, setRemainingAttempts] = useState(null);
 
   if (isLoggedIn) {
     return <Navigate to="/users" replace />;
@@ -62,12 +63,15 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setRemainingAttempts(null);
     try {
       await login({ email, password });
       navigate("/users", { replace: true });
     } catch (err) {
       const key = err.response?.data?.error;
+      const remaining = err.response?.data?.remaining;
       setError(key ? t(key) : t("login.errorGeneric"));
+      setRemainingAttempts(typeof remaining === "number" ? remaining : null);
     }
   };
 
@@ -106,9 +110,16 @@ function SignIn() {
             />
           </div>
           {error && (
-            <p style={{ color: "#c00", marginBottom: "0.75rem", fontSize: "0.9rem" }}>
-              {error}
-            </p>
+            <div style={{ marginBottom: "0.75rem" }}>
+              <p style={{ color: "#c00", fontSize: "0.9rem", margin: 0 }}>
+                {error}
+              </p>
+              {remainingAttempts !== null && (
+                <p style={{ color: "#666", fontSize: "0.85rem", margin: "0.25rem 0 0 0" }}>
+                  {t("login.attemptsRemaining", { count: remainingAttempts })}
+                </p>
+              )}
+            </div>
           )}
           <button type="submit" style={buttonStyle}>
             {t("login.submit")}
