@@ -35,10 +35,10 @@ const limiter = rateLimit({
 });
 routes.use(limiter);
 
-// Rate limit de login: 5 tentativas (apenas falhas) por 15 min (relaxado em test)
+// Rate limit de login: 5 tentativas (apenas falhas) por 15 min
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: isTest ? 10000 : 5,
+  max: 5,
   standardHeaders: true,
   skipSuccessfulRequests: true,
   handler: rateLimitHandler,

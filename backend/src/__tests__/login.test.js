@@ -1,3 +1,4 @@
+process.env.LOGIN_RATE_LIMIT_MAX = "5";
 const request = require("supertest");
 const app = require("../app");
 
@@ -18,5 +19,21 @@ describe("POST /login", () => {
       .send({ email: "admin@spsgroup.com.br", password: "wrong" });
     expect(res.status).toBe(401);
     expect(res.body.error).toBeDefined();
+  });
+
+  it("retorna 429 após várias tentativas erradas (rate limit)", async () => {
+    const agent = request(app);
+    for (let i = 0; i < 4; i++) {
+      const res = await agent
+        .post("/login")
+        .send({ email: "admin@spsgroup.com.br", password: "wrong" });
+      expect(res.status).toBe(401);
+    }
+    const res = await agent
+      .post("/login")
+      .send({ email: "admin@spsgroup.com.br", password: "wrong" });
+    expect(res.status).toBe(429);
+    expect(res.body.error).toBeDefined();
+    expect(res.body.remaining).toBe(0);
   });
 });
