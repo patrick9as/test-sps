@@ -80,6 +80,23 @@ const confirmDeleteButtonStyle = {
   marginTop: 0,
 };
 
+const filterButtonBase = {
+  padding: "0.4rem 0.9rem",
+  fontFamily: "inherit",
+  fontSize: "0.9rem",
+  borderRadius: "6px",
+  border: "1px solid #ccc",
+  cursor: "pointer",
+  background: "transparent",
+  color: "#555",
+};
+const filterButtonActive = {
+  ...filterButtonBase,
+  backgroundColor: "#2f73b2",
+  borderColor: "#2f73b2",
+  color: "#fff",
+};
+
 const pencilIcon = (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -107,8 +124,14 @@ function Users() {
   const [createPassword, setCreatePassword] = useState("");
   const [createConfirmPassword, setCreateConfirmPassword] = useState("");
   const [userToDelete, setUserToDelete] = useState(null);
+  const [filterType, setFilterType] = useState("all");
 
   const canChangeType = authUser?.type === "admin";
+
+  const filteredUsers =
+    filterType === "all"
+      ? users
+      : users.filter((u) => u.type === filterType);
 
   const clearCreateForm = () => {
     setCreateName("");
@@ -215,6 +238,36 @@ function Users() {
   return (
     <div style={pageStyle}>
       <h1 style={titleStyle}>{t("users.pageTitle")}</h1>
+      {!loading && !error && users.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1rem" }}>
+          <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.95rem", color: "#555" }}>
+            {t("users.filterByTypeDescription")}
+          </p>
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
+            <button
+              type="button"
+              style={filterType === "all" ? filterButtonActive : filterButtonBase}
+              onClick={() => setFilterType("all")}
+            >
+              {t("users.filterAll")}
+            </button>
+            <button
+              type="button"
+              style={filterType === "admin" ? filterButtonActive : filterButtonBase}
+              onClick={() => setFilterType("admin")}
+            >
+              {t("users.filterAdmin")}
+            </button>
+            <button
+              type="button"
+              style={filterType === "user" ? filterButtonActive : filterButtonBase}
+              onClick={() => setFilterType("user")}
+            >
+              {t("users.filterUser")}
+            </button>
+          </div>
+        </div>
+      )}
       {!loading && !error && (
         <button
           type="button"
@@ -278,9 +331,11 @@ function Users() {
       </Modal>
       {users.length === 0 ? (
         <p>{t("users.empty")}</p>
+      ) : filteredUsers.length === 0 ? (
+        <p>{t("users.empty")}</p>
       ) : (
         <Grid
-          items={users}
+          items={filteredUsers}
           renderItem={(user) => (
             <Card
               padding="1rem"

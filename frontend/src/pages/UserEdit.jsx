@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import UserService from "../services/UserService";
 import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import useMediaQuery from "../hooks/useMediaQuery";
 import UserFormFields from "../components/UserFormFields";
 
 const pageStyle = {
@@ -42,6 +43,21 @@ const submitButtonStyle = {
   fontSize: "1.1rem",
 };
 
+const saveBarStyleMobile = {
+  position: "fixed",
+  bottom: "56px",
+  left: 0,
+  right: 0,
+  padding: "0.75rem 1rem",
+  backgroundColor: "#fff",
+  boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 999,
+  boxSizing: "border-box",
+};
+
 const linkStyle = { color: "#2f73b2", textDecoration: "none", fontSize: "0.9rem" };
 
 export async function userLoader({ params }) {
@@ -70,6 +86,7 @@ function EditUser() {
 
   const isAdmin = authUser?.type === "admin";
   const canChangeType = isAdmin;
+  const isMobile = useMediaQuery("(max-width: 767px)");
 
   useEffect(() => {
     if (authUser != null && authUser.type !== "admin") {
@@ -136,13 +153,15 @@ function EditUser() {
 
   return (
     <div style={pageStyle}>
-      <div style={contentWrapperStyle}>
-        <form onSubmit={handleSubmit}>
+      <div style={{ ...contentWrapperStyle, paddingBottom: isMobile ? "7rem" : undefined }}>
+        <form onSubmit={handleSubmit} id="user-edit-form">
           <div style={headerRowStyle}>
             <h1 style={titleStyle}>{t("users.editTitle")}</h1>
-            <button type="submit" style={submitButtonStyle}>
-              {t("users.save")}
-            </button>
+            {!isMobile && (
+              <button type="submit" style={submitButtonStyle}>
+                {t("users.save")}
+              </button>
+            )}
           </div>
           <UserFormFields
             mode="edit"
@@ -155,6 +174,13 @@ function EditUser() {
           />
         </form>
       </div>
+      {isMobile && (
+        <div style={saveBarStyleMobile}>
+          <button type="submit" form="user-edit-form" style={{ ...submitButtonStyle, marginTop: 0, width: "100%", maxWidth: "400px" }}>
+            {t("users.save")}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
