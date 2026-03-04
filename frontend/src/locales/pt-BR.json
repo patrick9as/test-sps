@@ -24,5 +24,6 @@
   "users.pageTitle": "Usuários",
   "users.loading": "Carregando...",
   "users.empty": "Nenhum usuário cadastrado.",
+  "users.edit": "Editar",
   "common.logout": "Sair"
 }

@@ -24,5 +24,6 @@
   "users.pageTitle": "Users",
   "users.loading": "Loading...",
   "users.empty": "No users found.",
+  "users.edit": "Edit",
   "common.logout": "Log out"
 }
