@@ -43,24 +43,19 @@ Antes de executar `npm run dev`, é necessário configurar as variáveis de ambi
    | `PORT`           | Sim         | Porta em que a API sobe (ex.: `3000`) |
    | `JWT_SECRET`     | Sim         | Chave secreta para assinar os tokens JWT (use um valor forte em produção) |
    | `JWT_EXPIRES_IN` | Não         | Validade do token (ex.: `24h`, `7d`). Se omitido, o padrão é `24h` |
-   | `STORAGE`        | Não         | `memory` (padrão) ou `postgres`. Define onde os dados são persistidos |
-   | `PG_HOST`        | Se `STORAGE=postgres` | Host do PostgreSQL (ex.: `localhost`) |
-   | `PG_PORT`        | Se `STORAGE=postgres` | Porta do PostgreSQL (ex.: `5433`) |
-   | `PG_USER`        | Se `STORAGE=postgres` | Usuário do banco |
-   | `PG_PASSWORD`    | Se `STORAGE=postgres` | Senha do banco |
-   | `PG_DATABASE`    | Se `STORAGE=postgres` | Nome do banco (ex.: `SPS_TEST`) |
+   | `PG_HOST`        | Modo Postgres | Host do PostgreSQL (ex.: `localhost`) |
+   | `PG_PORT`        | Modo Postgres | Porta do PostgreSQL (ex.: `5433`) |
+   | `PG_USER`        | Modo Postgres | Usuário do banco |
+   | `PG_PASSWORD`    | Modo Postgres | Senha do banco |
+   | `PG_DATABASE`    | Modo Postgres | Nome do banco (ex.: `SPS_TEST`) |
+
+   **Modo de armazenamento:** o modo (memória ou Postgres) é definido **pelo script npm** que você executa na raiz (`npm run dev:memory` ou `npm run dev:postgres`), não por variável no `.env`.
 
    **Importante para o modo Postgres:** o Docker Compose usa o **`backend/.env`** para criar o container do banco: ele lê `PG_USER`, `PG_PASSWORD`, `PG_DATABASE` e `PG_PORT` daqui. Ou seja, a senha e as demais configurações do PostgreSQL são definidas neste arquivo; configure-as antes de rodar `npm run docker:up` ou `docker:up:d`.
 
-   Exemplo (só memória):
-   ```
-   PORT=3000
-   JWT_SECRET=uma_chave_secreta_forte_aqui
-   JWT_EXPIRES_IN=24h
-   STORAGE=memory
-   ```
+   Exemplo (só memória): `PORT`, `JWT_SECRET` e opcionalmente `JWT_EXPIRES_IN`. Para rodar em memória use o script `npm run dev:memory` na raiz.
 
-   Exemplo (com PostgreSQL): use também as variáveis `PG_*` conforme o `backend/.env.example`.
+   Exemplo (com PostgreSQL): use também as variáveis `PG_*` conforme o `backend/.env.example` e rode `npm run dev:postgres` na raiz.
 
 ### Frontend (`frontend/.env`)
 
@@ -99,7 +94,7 @@ A aplicação tem **dois modos de execução**. Escolha um:
 
   Ou simplesmente `npm run dev` (o padrão é memória).
 
-- **Requisitos:** só o `backend/.env` com `PORT`, `JWT_SECRET` e, se quiser explícito, `STORAGE=memory`. Não precisa de Docker nem PostgreSQL.
+- **Requisitos:** `backend/.env` com `PORT` e `JWT_SECRET`. Não precisa de Docker nem PostgreSQL. O modo memória é definido pelo script.
 
 ---
 
@@ -123,7 +118,7 @@ A aplicação tem **dois modos de execução**. Escolha um:
      npm run dev:postgres
      ```
 
-- **Requisitos:** Docker instalado; `backend/.env` com `STORAGE=postgres` e as variáveis `PG_HOST`, `PG_PORT`, `PG_USER`, `PG_PASSWORD`, `PG_DATABASE` (conforme `backend/.env.example`). Na primeira subida o backend aplica as migrations e cria o usuário admin padrão. O `docker-compose.yml` fica em **`backend/`** e, ao subir o container, **usa o `backend/.env` para criar o banco** (usuário, senha e nome do banco vêm das variáveis `PG_*`). Defina `PG_PASSWORD` e as demais apenas no seu `.env` local, sem commitar.
+- **Requisitos:** Docker instalado; `backend/.env` com as variáveis `PG_HOST`, `PG_PORT`, `PG_USER`, `PG_PASSWORD`, `PG_DATABASE` (conforme `backend/.env.example`). O modo Postgres é definido pelo script `npm run dev:postgres`. Na primeira subida o backend aplica as migrations e cria o usuário admin padrão. O `docker-compose.yml` fica em **`backend/`** e **usa o `backend/.env` para criar o banco** (usuário, senha e nome do banco vêm das variáveis `PG_*`). Defina `PG_PASSWORD` e as demais apenas no seu `.env` local, sem commitar.
 
 **Resumo:** para rodar com Postgres, **sempre execute o comando do compose antes** de rodar `npm run dev:postgres`. Na raiz, `npm run docker:up` (ou `docker:up:d`) delega para o backend, onde o compose é executado.
 
