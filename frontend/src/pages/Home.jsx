@@ -1,3 +1,7 @@
+/**
+ * Página inicial (Home) da aplicação.
+ * Exibe título e link para a listagem de usuários.
+ */
 import React from "react";
 
 function Home() {

@@ -1,3 +1,8 @@
+/**
+ * Navbar principal: logo, Home, idioma, logout.
+ * Desktop: barra no topo com todos os itens. Mobile: barra fixa no rodapé, botão de idioma
+ * centralizado, menu hambúrguer (Olá + Sair) e painéis de idioma/menu que abrem acima da barra.
+ */
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -25,6 +30,7 @@ const homeLinkStyle = { display: "flex", alignItems: "center", color: "#fff", te
 
 const rightStyle = { display: "flex", alignItems: "center", gap: "1rem" };
 
+/* Layout mobile: três zonas (Home à esquerda, idioma no centro, hambúrguer à direita) */
 const mobileLeftStyle = { ...leftStyle, flex: 1, minWidth: 0, justifyContent: "flex-start" };
 const mobileCenterStyle = { position: "absolute", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center" };
 const mobileRightStyle = { display: "flex", alignItems: "center", gap: "0.25rem", flex: 1, minWidth: 0, justifyContent: "flex-end" };
@@ -102,6 +108,7 @@ const menuPanelStyleMobile = {
   boxShadow: "0 -4px 12px rgba(0,0,0,0.3)",
 };
 
+/* Painel de idiomas no mobile: largura total e bandeiras centralizadas/maiores */
 const languagePanelStyleMobile = {
   ...menuPanelStyleMobile,
   left: 0,

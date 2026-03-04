@@ -1,3 +1,7 @@
+/**
+ * Modal reutilizável: overlay escuro + caixa centralizada com título e botão de fechar.
+ * Fecha ao clicar no overlay ou no X. Controla scroll do body quando aberto.
+ */
 import React, { useEffect } from "react";
 
 const overlayStyle = {
@@ -50,6 +54,7 @@ const contentStyle = {
 };
 
 function Modal({ open, onClose, title, children }) {
+  /* Fecha o modal com tecla Escape */
   useEffect(() => {
     if (!open) return;
     const handleEscape = (e) => {
@@ -75,6 +80,7 @@ function Modal({ open, onClose, title, children }) {
         style={boxStyle}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Impede que clique dentro da caixa feche o modal */}
         <div style={headerStyle}>
           <h2 id={titleId} style={titleStyle}>
             {title}

@@ -1,3 +1,7 @@
+/**
+ * Seletor de idioma por bandeiras (pt-BR, es, en).
+ * Props: variant (light/dark), size (normal/large para mobile), onLanguageChange (callback ao trocar).
+ */
 import React from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 
@@ -35,7 +39,7 @@ function LanguageSwitcher({ variant = "light", onLanguageChange, size = "normal"
 
   const handleSelect = (lang) => {
     setLanguage(lang);
-    onLanguageChange?.(lang);
+    onLanguageChange?.(lang); /* Usado pelo Navbar para fechar o painel ao escolher idioma */
   };
 
   const containerStyle = {

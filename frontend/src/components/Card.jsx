@@ -1,3 +1,7 @@
+/**
+ * Componente Card: container com bordas arredondadas, sombra e título opcional.
+ * Usado no login, listagem e modais. Aceita override de padding, borderRadius, minWidth, etc.
+ */
 import React from "react";
 
 const defaultStyles = {
@@ -46,6 +50,7 @@ function Card({
 
   return (
     <div style={containerStyle} {...rest}>
+      {/* Título opcional posicionado no topo do card */}
       {title && <h2 style={titleStyle}>{title}</h2>}
       <div style={{ marginTop: title ? "2.25rem" : 0 }}>{children}</div>
     </div>

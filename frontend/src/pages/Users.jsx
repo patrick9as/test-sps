@@ -1,3 +1,8 @@
+/**
+ * Página de listagem de usuários (Users).
+ * Lista usuários em cards, com filtro por tipo (Todos / Admin / User), FAB para novo usuário,
+ * modal de criação, confirmação antes de excluir e links para edição. Layout responsivo (mobile: FAB e padding).
+ */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -128,6 +133,7 @@ function Users() {
 
   const canChangeType = authUser?.type === "admin";
 
+  /* Lista filtrada por tipo (all / admin / user) para os botões de filtro */
   const filteredUsers =
     filterType === "all"
       ? users
@@ -183,6 +189,7 @@ function Users() {
     }
   };
 
+  /* Carrega a lista de usuários ao montar a página */
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -238,6 +245,7 @@ function Users() {
   return (
     <div style={pageStyle}>
       <h1 style={titleStyle}>{t("users.pageTitle")}</h1>
+      {/* Filtro por tipo (Todos / Admin / User), só exibido quando há usuários */}
       {!loading && !error && users.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1rem" }}>
           <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.95rem", color: "#555" }}>
@@ -282,6 +290,7 @@ function Users() {
           +
         </button>
       )}
+      {/* Modal de confirmação antes de excluir um usuário */}
       <Modal
         open={!!userToDelete}
         onClose={() => setUserToDelete(null)}

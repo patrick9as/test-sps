@@ -1,3 +1,8 @@
+/**
+ * Layout das rotas protegidas: exige login (redireciona para /login se não autenticado).
+ * Renderiza Navbar + Outlet (conteúdo da rota). No mobile: wrapper com altura total da tela,
+ * main rolável com padding inferior para navbar + FAB, e Navbar fixa no rodapé.
+ */
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import useMediaQuery from "../hooks/useMediaQuery";
@@ -5,6 +10,7 @@ import Navbar from "./Navbar";
 
 const mainStyle = { padding: "1rem 1.5rem", boxSizing: "border-box" };
 
+/* No mobile: container em coluna com altura mínima da viewport para o main preencher e rolar */
 const wrapperStyleMobile = {
   minHeight: "100dvh",
   display: "flex",
@@ -19,6 +25,7 @@ export default function ProtectedRoute() {
     return <Navigate to="/login" replace />;
   }
 
+  /* Mobile: main flexível com scroll e padding inferior (navbar 56px + espaço FAB 100px) */
   const style = isMobile
     ? {
         ...mainStyle,

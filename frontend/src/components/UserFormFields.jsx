@@ -1,3 +1,8 @@
+/**
+ * Campos reutilizáveis de usuário: nome, email, tipo (admin/user), senha e confirmar senha.
+ * Modos: "create" (cadastro) e "edit" (edição, com link "Alterar senha"). Exibe barra de
+ * requisitos da senha e validação em tempo real.
+ */
 import React from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 
@@ -35,6 +40,7 @@ const passwordBarTrackStyle = {
 };
 const requirementRowStyle = { display: "flex", alignItems: "center", gap: "0.35rem", marginTop: "0.25rem", fontSize: "0.85rem" };
 
+/* Verifica se a senha atende a cada requisito (tamanho, número, maiúscula, minúscula, especial) */
 function getPasswordRequirements(value) {
   const s = value || "";
   return {

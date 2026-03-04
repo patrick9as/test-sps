@@ -1,3 +1,8 @@
+/**
+ * Página de edição de usuário (UserEdit).
+ * Apenas admins podem acessar; não-admin é redirecionado com toast. Formulário de nome, email, tipo
+ * e opção de alterar senha. No mobile: botão Salvar fixo acima da navbar.
+ */
 import React, { useState, useEffect } from "react";
 import { useLoaderData, useParams, useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -43,6 +48,7 @@ const submitButtonStyle = {
   fontSize: "1.1rem",
 };
 
+/* Barra fixa no mobile com botão Salvar, posicionada acima da navbar (56px) */
 const saveBarStyleMobile = {
   position: "fixed",
   bottom: "56px",
@@ -60,6 +66,7 @@ const saveBarStyleMobile = {
 
 const linkStyle = { color: "#2f73b2", textDecoration: "none", fontSize: "0.9rem" };
 
+/* Loader do React Router: busca o usuário por ID antes de renderizar a página; 404 retorna user null */
 export async function userLoader({ params }) {
   try {
     const response = await UserService.get(params.userId);
@@ -88,6 +95,7 @@ function EditUser() {
   const canChangeType = isAdmin;
   const isMobile = useMediaQuery("(max-width: 767px)");
 
+  /* Redireciona não-admin para /users com toast de aviso */
   useEffect(() => {
     if (authUser != null && authUser.type !== "admin") {
       toast.error(t("users.only_admin_can_modify_others"));

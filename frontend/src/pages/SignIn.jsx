@@ -1,3 +1,8 @@
+/**
+ * Página de login (SignIn).
+ * Exibe formulário de email/senha, logo SPS, seletor de idioma e redireciona
+ * usuários já autenticados. No mobile: layout centralizado e bandeiras fixas no rodapé.
+ */
 import React, { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -6,6 +11,7 @@ import useMediaQuery from "../hooks/useMediaQuery";
 import Card from "../components/Card";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 
+/* Estilos do container principal (desktop: tudo centralizado; mobile: padding inferior para a barra de idiomas) */
 const wrapperStyle = {
   position: "fixed",
   inset: 0,
@@ -32,6 +38,7 @@ const languageSwitcherWrapperStyle = {
   right: "1rem",
 };
 
+/* Barra fixa no rodapé no mobile com as bandeiras de idioma */
 const languageBarMobileStyle = {
   position: "fixed",
   bottom: 0,
@@ -46,6 +53,7 @@ const languageBarMobileStyle = {
   boxSizing: "border-box",
 };
 
+/* Estilos do formulário */
 const formGroupStyle = { marginBottom: "1rem" };
 const labelStyle = { display: "block", marginBottom: "0.25rem" };
 const inputStyle = {
@@ -101,6 +109,7 @@ function SignIn() {
       await login({ email, password });
       navigate("/users", { replace: true });
     } catch (err) {
+      /* Exibe mensagem de erro e, se vier do backend, tentativas restantes (rate limit) */
       const key = err.response?.data?.error;
       const remaining = err.response?.data?.remaining;
       setError(key ? t(key) : t("login.errorGeneric"));
