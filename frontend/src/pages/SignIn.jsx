@@ -5,7 +5,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import Card from "../components/Card";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 
-const centerStyle = {
+const wrapperStyle = {
   position: "fixed",
   inset: 0,
   display: "flex",
@@ -16,6 +16,12 @@ const centerStyle = {
   boxSizing: "border-box",
   margin: 0,
   background: "linear-gradient(to bottom right, #2f73b2, #000)",
+};
+
+const languageSwitcherWrapperStyle = {
+  position: "absolute",
+  top: "1rem",
+  right: "1rem",
 };
 
 const formGroupStyle = { marginBottom: "1rem" };
@@ -66,9 +72,9 @@ function SignIn() {
   };
 
   return (
-    <div style={centerStyle}>
-      <div style={{ position: "absolute", top: "1rem", right: "1rem" }}>
-        <LanguageSwitcher />
+    <div style={wrapperStyle}>
+      <div style={languageSwitcherWrapperStyle}>
+        <LanguageSwitcher variant="light" />
       </div>
       <img src="/SPS.png" alt="SPS" style={{ marginBottom: "4rem", maxWidth: "24rem", height: "auto" }} />
       <Card title={t("login.title")}>
