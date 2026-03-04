@@ -1,10 +1,12 @@
 const jwt = require("jsonwebtoken");
 const { ERROR_KEYS, getJwtSecret } = require("../config/constants");
+const userRepository = require("../repositories/user.repository");
 const { sendError } = require("../utils/errors");
 
 /**
  * Middleware que valida JWT e define req.user (id, email, type).
- * Token inválido ou ausente -> 401 { error: "auth.invalid_token" }.
+ * Verifica também se o usuário ainda existe no repositório.
+ * Token inválido, ausente ou usuário inexistente -> 401 { error: "auth.invalid_token" }.
  */
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -15,10 +17,14 @@ function authMiddleware(req, res, next) {
   try {
     const secret = getJwtSecret();
     const payload = jwt.verify(token, secret);
+    const user = userRepository.findById(payload.sub);
+    if (!user) {
+      return sendError(res, 401, ERROR_KEYS.AUTH_INVALID_TOKEN);
+    }
     req.user = {
-      id: payload.sub,
-      email: payload.email,
-      type: payload.type,
+      id: user.id,
+      email: user.email,
+      type: user.type,
     };
     next();
   } catch {

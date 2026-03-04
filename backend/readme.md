@@ -59,6 +59,7 @@ PORTUGUÊS
 
 - Copie `.env.example` para `.env` e defina `PORT`, `JWT_SECRET` e opcionalmente `JWT_EXPIRES_IN`.
 - Único endpoint **público**: `POST /login`. Todas as demais rotas exigem header `Authorization: Bearer <token>`.
+- O middleware de autenticação valida o JWT e verifica se o usuário ainda existe no repositório; se o usuário foi excluído após a emissão do token, a resposta é 401 `auth.invalid_token`.
 
 ### Constantes (i18n)
 
