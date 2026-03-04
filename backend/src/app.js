@@ -24,7 +24,6 @@ app.use(express.json());
 
 // Documentação Swagger: UI em /api-docs, spec bruta em /api-docs.json
 app.get("/api-docs.json", (_, res) => res.json(openapiSpec));
-app.get("/api-docs", (_, res) => res.redirect(301, "/api-docs/"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpec));
 
 app.use(routes);
