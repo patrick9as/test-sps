@@ -2,10 +2,13 @@
 
 Este repositório contém o **backend** (Node/Express) e o **frontend** (React/Vite) do projeto: API REST de usuários com autenticação JWT e aplicação web com CRUD, login e listagem. Na raiz existem scripts para instalar dependências e rodar os dois ao mesmo tempo.
 
+**A aplicação pode rodar de duas formas:** com **dados em memória** (sem banco, ideal para desenvolvimento rápido) ou com **PostgreSQL** (dados persistidos em banco, via Docker). Você escolhe o modo na hora de subir o projeto; ambos estão disponíveis e documentados abaixo.
+
 ## Pré-requisitos
 
 - **Node.js** (versão 18 ou superior recomendada)
 - **npm**
+- **Docker** (apenas se for rodar no modo PostgreSQL; para o modo em memória não é necessário)
 
 ## 1. Instalar dependências
 
@@ -40,13 +43,22 @@ Antes de executar `npm run dev`, é necessário configurar as variáveis de ambi
    | `PORT`           | Sim         | Porta em que a API sobe (ex.: `3000`) |
    | `JWT_SECRET`     | Sim         | Chave secreta para assinar os tokens JWT (use um valor forte em produção) |
    | `JWT_EXPIRES_IN` | Não         | Validade do token (ex.: `24h`, `7d`). Se omitido, o padrão é `24h` |
+   | `STORAGE`        | Não         | `memory` (padrão) ou `postgres`. Define onde os dados são persistidos |
+   | `PG_HOST`        | Se `STORAGE=postgres` | Host do PostgreSQL (ex.: `localhost`) |
+   | `PG_PORT`        | Se `STORAGE=postgres` | Porta do PostgreSQL (ex.: `5433`) |
+   | `PG_USER`        | Se `STORAGE=postgres` | Usuário do banco |
+   | `PG_PASSWORD`    | Se `STORAGE=postgres` | Senha do banco |
+   | `PG_DATABASE`    | Se `STORAGE=postgres` | Nome do banco (ex.: `SPS_TEST`) |
 
-   Exemplo:
+   Exemplo (só memória):
    ```
    PORT=3000
    JWT_SECRET=uma_chave_secreta_forte_aqui
    JWT_EXPIRES_IN=24h
+   STORAGE=memory
    ```
+
+   Exemplo (com PostgreSQL): use também as variáveis `PG_*` conforme o `backend/.env.example`.
 
 ### Frontend (`frontend/.env`)
 
@@ -67,34 +79,65 @@ Antes de executar `npm run dev`, é necessário configurar as variáveis de ambi
 
 **Resumo:** sem `backend/.env` (com `PORT` e `JWT_SECRET`) o servidor não inicia; sem `frontend/.env` (com `VITE_SERVER_URL`) o frontend não conseguirá chamar a API corretamente.
 
-## 3. Rodar o projeto
+## 3. Rodar o projeto (dois modos)
 
-Ainda na **raiz do projeto**, rode:
+A aplicação tem **dois modos de execução**. Escolha um:
 
-```bash
-npm run dev
-```
+---
 
-Isso sobe em paralelo:
+### Modo 1: Dados em memória
+
+- **O que é:** o backend guarda usuários em memória (RAM). Nada é gravado em banco; ao reiniciar o servidor, os dados são perdidos (exceto o usuário admin padrão, que é recriado na subida).
+- **Quando usar:** desenvolvimento rápido, testes, quando não precisa de persistência.
+- **Como rodar** (na raiz do projeto):
+
+  ```bash
+  npm run dev:memory
+  ```
+
+  Ou simplesmente `npm run dev` (o padrão é memória).
+
+- **Requisitos:** só o `backend/.env` com `PORT`, `JWT_SECRET` e, se quiser explícito, `STORAGE=memory`. Não precisa de Docker nem PostgreSQL.
+
+---
+
+### Modo 2: PostgreSQL (dados persistidos)
+
+- **O que é:** o backend usa um banco PostgreSQL. Os dados ficam gravados no disco (volume Docker) e permanecem após reiniciar.
+- **Quando usar:** quando quiser persistência, testar com banco real ou simular ambiente mais próximo de produção.
+- **Como rodar:**
+
+  1. **Subir o Postgres primeiro** (obrigatório). Na raiz do projeto, em um terminal:
+
+     ```bash
+     npm run docker:up
+     ```
+
+     (Ou `npm run docker:up:d` para rodar o Postgres em background.)
+
+  2. **Depois**, em outro terminal (ou no mesmo, se usou `docker:up:d`), subir a aplicação em modo Postgres:
+
+     ```bash
+     npm run dev:postgres
+     ```
+
+- **Requisitos:** Docker instalado; `backend/.env` com `STORAGE=postgres` e as variáveis `PG_HOST`, `PG_PORT`, `PG_USER`, `PG_PASSWORD`, `PG_DATABASE` (conforme `backend/.env.example`). Na primeira subida o backend aplica as migrations e cria o usuário admin padrão. O `docker-compose.yml` fica em **`backend/`** e lê essas variáveis do próprio `backend/.env`; defina `PG_PASSWORD` (e as demais) apenas no seu `.env` local, sem commitar.
+
+**Resumo:** para rodar com Postgres, **sempre execute o comando do compose antes** de rodar `npm run dev:postgres`. Na raiz, `npm run docker:up` (ou `docker:up:d`) delega para o backend, onde o compose é executado.
+
+---
+
+### O que sobe em ambos os modos
+
+Em qualquer um dos modos acima, sobem em paralelo:
 
 - **Backend** — API na porta definida em `backend/.env` (ex.: `http://localhost:3000`)
 - **Frontend** — Vite em `http://localhost:5173`
 
-### Rodar apenas um dos dois
+### Rodar apenas backend ou frontend
 
 - Só o backend: `npm run dev:backend`
 - Só o frontend: `npm run dev:frontend`
-
-## Resumo de comandos
-
-| Comando               | O que faz                                                |
-|-----------------------|----------------------------------------------------------|
-| `npm run install:all` | Instala dependências da raiz, do backend e do frontend   |
-| `npm run dev`         | Sobe backend e frontend em paralelo                     |
-| `npm run dev:backend` | Sobe só o backend                                       |
-| `npm run dev:frontend`| Sobe só o frontend                                      |
-| `npm test` (em `backend`) | Roda os testes unitários (Jest) do backend           |
-| `npm run test:watch` (em `backend`) | Jest em modo watch              |
 
 ## API (backend)
 
@@ -146,3 +189,21 @@ Os testes E2E do frontend usam **Cypress** e rodam contra o app real (backend e 
    - **Com navegador visível (Chrome):** `npm run cy:run:headed`
 
 Certifique-se de que o `frontend/.env` está configurado com `VITE_SERVER_URL` apontando para a URL do backend (ex.: `http://localhost:3000`), pois o app usa essa URL para as chamadas de API durante os testes.
+
+## Resumo de comandos
+
+| Comando               | Onde      | O que faz                                                |
+|-----------------------|-----------|----------------------------------------------------------|
+| `npm run install:all` | raiz      | Instala dependências da raiz, do backend e do frontend   |
+| **Modo memória**      |           |                                                          |
+| `npm run dev`         | raiz      | Sobe backend e frontend (**dados em memória**, padrão)   |
+| `npm run dev:memory`  | raiz      | Idem: backend e frontend com **dados em memória**        |
+| **Modo Postgres**     |           |                                                          |
+| `npm run docker:up`   | raiz      | Sobe o Postgres (primeiro plano; porta 5433). Rode **antes** de `dev:postgres` |
+| `npm run docker:up:d` | raiz      | Sobe o Postgres em background                            |
+| `npm run dev:postgres`| raiz      | Sobe backend e frontend com **PostgreSQL** (Postgres já deve estar no ar) |
+| **Testes**            |           |                                                          |
+| `npm test`            | backend   | Roda os testes unitários (Jest) do backend (na pasta `backend`) |
+| `npm run test:watch`  | backend   | Jest em modo watch (na pasta `backend`)                  |
+| `npm run cy:run`      | frontend  | Roda os testes E2E Cypress em modo headless (na pasta `frontend`) |
+| `npm run cy:run:headed` | frontend | Roda os testes E2E Cypress com navegador visível (Chrome; na pasta `frontend`) |
