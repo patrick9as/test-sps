@@ -104,6 +104,20 @@ Isso sobe em paralelo:
 - Respostas de sucesso com dados usam `{ "data": ... }`; erros usam `{ "error": "chave_i18n" }` para o frontend traduzir.
 - **Rate limit:** 100 req/15 min global; login: 5 tentativas (falhas) por 15 min.
 
+## Collection Postman (API)
+
+Há uma collection do Postman para testar a API do backend em **`backend/SPS Test.postman_collection.json`**.
+
+**Como usar:**
+
+1. Abra o [Postman](https://www.postman.com/) e importe o arquivo: *Import* → escolha `backend/SPS Test.postman_collection.json`.
+2. Configure a variável de ambiente da collection:
+   - **`base_url`** — URL base da API (ex.: `http://localhost:3000`), igual à `PORT` do seu `backend/.env`.
+3. As rotas de usuários exigem autenticação. Faça primeiro **POST /login** (na pasta da collection) com um usuário válido; em seguida, na collection ou no ambiente, defina o header **`Authorization`** como `Bearer <token>` (o token vem na resposta do login). No Postman você pode usar um script de teste no login para salvar o token em variável e um auth do tipo Bearer Token com essa variável.
+4. A collection inclui exemplos de **login**, **users** (listar, obter por id, criar, editar, excluir). A requisição "post new user" grava o `user_id` retornado em variável para usar em get/put/delete por id.
+
+Com o backend rodando (`npm run dev:backend` ou `npm run dev`), use a collection para chamar os endpoints sem depender do frontend.
+
 ## Frontend (Vite)
 
 - **`npm run dev`** / **`npm start`** — servidor de desenvolvimento (na pasta `frontend` ou via `npm run dev:frontend` na raiz).
