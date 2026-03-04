@@ -9,6 +9,14 @@ const pageStyle = {
   padding: "0.5rem 0",
   minHeight: "100vh",
   boxSizing: "border-box",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+};
+
+const contentWrapperStyle = {
+  width: "100%",
+  maxWidth: "400px",
 };
 
 const titleStyle = { marginTop: 0, marginBottom: "1.5rem" };
@@ -111,11 +119,13 @@ function EditUser() {
   if (user === null) {
     return (
       <div style={pageStyle}>
-        <h1 style={titleStyle}>{t("users.editTitle")}</h1>
-        <p style={{ color: "#c00" }}>{t("users.not_found")}</p>
-        <Link to="/users" style={linkStyle}>
-          ← {t("users.pageTitle")}
-        </Link>
+        <div style={contentWrapperStyle}>
+          <h1 style={titleStyle}>{t("users.editTitle")}</h1>
+          <p style={{ color: "#c00" }}>{t("users.not_found")}</p>
+          <Link to="/users" style={linkStyle}>
+            ← {t("users.pageTitle")}
+          </Link>
+        </div>
       </div>
     );
   }
@@ -152,8 +162,9 @@ function EditUser() {
 
   return (
     <div style={pageStyle}>
-      <h1 style={titleStyle}>{t("users.editTitle")}</h1>
-      <form onSubmit={handleSubmit}>
+      <div style={contentWrapperStyle}>
+        <h1 style={titleStyle}>{t("users.editTitle")}</h1>
+        <form onSubmit={handleSubmit}>
         <div style={formGroupStyle}>
           <label htmlFor="user-edit-name" style={labelStyle}>
             {t("users.name")}
@@ -287,7 +298,7 @@ function EditUser() {
           {t("users.save")}
         </button>
       </form>
-      
+      </div>
     </div>
   );
 }
