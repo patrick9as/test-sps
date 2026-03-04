@@ -24,19 +24,21 @@ function rateLimitHandler(req, res) {
   });
 }
 
-// Rate limit global: 100 requisições por 15 min para todas as rotas
+const isTest = process.env.NODE_ENV === "test";
+
+// Rate limit global: 100 requisições por 15 min para todas as rotas (relaxado em test)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: isTest ? 10000 : 100,
   standardHeaders: true,
   handler: rateLimitHandler,
 });
 routes.use(limiter);
 
-// Rate limit de login: 5 tentativas (apenas falhas) por 15 min
+// Rate limit de login: 5 tentativas (apenas falhas) por 15 min (relaxado em test)
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: isTest ? 10000 : 5,
   standardHeaders: true,
   skipSuccessfulRequests: true,
   handler: rateLimitHandler,

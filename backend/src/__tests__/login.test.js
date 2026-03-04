@@ -1,0 +1,22 @@
+const request = require("supertest");
+const app = require("../app");
+
+describe("POST /login", () => {
+  it("retorna token com credenciais válidas do admin", async () => {
+    const res = await request(app)
+      .post("/login")
+      .send({ email: "admin@spsgroup.com.br", password: "1234" });
+    expect(res.status).toBe(200);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data.token).toBeDefined();
+    expect(typeof res.body.data.token).toBe("string");
+  });
+
+  it("retorna 401 com credenciais inválidas", async () => {
+    const res = await request(app)
+      .post("/login")
+      .send({ email: "admin@spsgroup.com.br", password: "wrong" });
+    expect(res.status).toBe(401);
+    expect(res.body.error).toBeDefined();
+  });
+});

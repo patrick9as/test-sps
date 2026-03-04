@@ -134,6 +134,13 @@ function emailExists(email, excludeId) {
   return !!found;
 }
 
+/**
+ * Esvazia o store em memória. Apenas para uso em testes (isolamento entre testes).
+ */
+function clearStore() {
+  store.clear();
+}
+
 module.exports = {
   findAll,
   findById,
@@ -147,4 +154,5 @@ module.exports = {
   update,
   remove,
   emailExists,
+  clearStore,
 };
