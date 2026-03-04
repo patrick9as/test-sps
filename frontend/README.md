@@ -28,3 +28,17 @@ PORTUGUÊS
 - Pode usar qualquer tipo de storage para guardar o token
 - Só será possível cadastrar e/ou visualizar os usuários se estiver autenticado
 - Chamar a API que foi criada anteriormente (test-sps-server)
+
+## Desenvolvimento (Vite)
+
+O frontend usa [Vite](https://vitejs.dev/) para dev e build.
+
+- **`npm run dev`** ou **`npm start`** — servidor de desenvolvimento (porta 3000)
+- **`npm run build`** — build de produção em `dist/`
+- **`npm run preview`** — preview do build de produção
+
+### Variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do frontend (copie de `.env.example`). Variáveis expostas ao app devem ter o prefixo **`VITE_`**:
+
+- `VITE_SERVER_URL` — URL base da API (ex.: `http://localhost:4000`)
