@@ -117,10 +117,7 @@ Os testes E2E do frontend usam **Cypress** e rodam contra o app real (backend e 
    npm run dev
    ```
 2. **Rodar os testes** (na pasta `frontend`):
-   - **Interativo (abre a interface do Cypress):** `npm run cy:open`
-   - **Interativo com Chrome (alternativa ao Electron):** `npm run cy:open:chrome`
    - **Headless (CI):** `npm run cy:run`
+   - **Com navegador visível (Chrome):** `npm run cy:run:headed`
 
 Certifique-se de que o `frontend/.env` está configurado com `VITE_SERVER_URL` apontando para a URL do backend (ex.: `http://localhost:3000`), pois o app usa essa URL para as chamadas de API durante os testes.
-
-**Se aparecer no terminal** `Terminating renderer for bad IPC message, reason 114` ao usar `cy:open`: é um problema conhecido do Electron (a janela do Cypress é Electron mesmo ao escolher Chrome). O projeto usa Cypress 14.x para reduzir o problema. Se ainda ocorrer: use `npm run cy:run:headed` para rodar os testes vendo o navegador (Chrome), ou `npm run cy:run` (headless). O `cy:run` em geral não é afetado.
