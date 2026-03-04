@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import UserService from "../services/UserService";
 import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import useMediaQuery from "../hooks/useMediaQuery";
 import Grid from "../components/Grid";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
@@ -28,10 +29,9 @@ const deleteButtonStyle = {
   alignItems: "center",
 };
 
-const fabStyle = {
+const fabStyleBase = {
   position: "fixed",
   right: "1.5rem",
-  bottom: "1.5rem",
   width: "80px",
   height: "80px",
   minWidth: "80px",
@@ -78,6 +78,7 @@ const closeIcon = (
 function Users() {
   const { t } = useLanguage();
   const { user: authUser } = useAuth();
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -197,7 +198,10 @@ function Users() {
       {!loading && !error && (
         <button
           type="button"
-          style={fabStyle}
+          style={{
+            ...fabStyleBase,
+            bottom: isMobile ? "calc(56px + 1rem)" : "1.5rem",
+          }}
           onClick={() => setModalOpen(true)}
           title={t("users.newUser")}
           aria-label={t("users.newUser")}
