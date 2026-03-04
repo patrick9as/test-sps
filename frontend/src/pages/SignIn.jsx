@@ -17,8 +17,26 @@ const centerStyle = {
 
 const formGroupStyle = { marginBottom: "1rem" };
 const labelStyle = { display: "block", marginBottom: "0.25rem" };
-const inputStyle = { width: "100%", padding: "0.5rem", boxSizing: "border-box" };
-const buttonStyle = { width: "100%", padding: "0.5rem 1rem", marginTop: "0.5rem" };
+const inputStyle = {
+  width: "100%",
+  padding: "0.35rem 0.75rem",
+  boxSizing: "border-box",
+  borderRadius: "8px",
+  border: "1px solid #ccc",
+  fontSize: "0.9rem",
+};
+const buttonStyle = {
+  width: "100%",
+  padding: "0.5rem 1rem",
+  marginTop: "0.5rem",
+  backgroundColor: "#2f73b2",
+  color: "#fff",
+  border: "none",
+  borderRadius: "9999px",
+  cursor: "pointer",
+  fontFamily: "inherit",
+  fontSize: "1rem",
+};
 
 function SignIn() {
   const navigate = useNavigate();
@@ -38,7 +56,7 @@ function SignIn() {
 
   return (
     <div style={centerStyle}>
-      <Card title="Página de Login">
+      <Card title="Login">
         <form onSubmit={handleSubmit}>
           <div style={formGroupStyle}>
             <label htmlFor="email" style={labelStyle}>
