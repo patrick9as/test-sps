@@ -7,9 +7,9 @@ if (!process.env.PORT || !process.env.JWT_SECRET) {
 }
 
 const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
+const cors = require("cors"); // Middleware para segurança de CORS
+const helmet = require("helmet"); // Middleware para segurança
+const morgan = require("morgan"); // Middleware para logging
 const routes = require("./routes");
 const userRepository = require("./repositories/user.repository");
 
