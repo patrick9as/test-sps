@@ -3,7 +3,7 @@ const authController = require("./controllers/auth.controller");
 const usersController = require("./controllers/users.controller");
 const { authMiddleware } = require("./middlewares/auth.middleware");
 const { requireAdminForOther } = require("./middlewares/admin.middleware");
-const asyncHandler = require("./utils/asyncHandler");
+const { asyncHandler } = require("./utils/asyncHandler");
 
 const routes = Router();
 
