@@ -2,6 +2,27 @@ require("dotenv").config();
 
 const ADMIN_EMAIL = "admin@spsgroup.com.br";
 
+/** Chaves de erro/mensagem para i18n (frontend). */
+const ERROR_KEYS = {
+  AUTH_INVALID_CREDENTIALS: "auth.invalid_credentials",
+  AUTH_INVALID_TOKEN: "auth.invalid_token",
+  AUTH_FORBIDDEN: "auth.forbidden",
+  AUTH_EMAIL_TAKEN: "auth.email_taken",
+  USERS_NOT_FOUND: "users.not_found",
+  USERS_DELETED: "users.deleted",
+  USERS_CANNOT_DELETE_SELF: "users.cannot_delete_self",
+  USERS_ADMIN_CANNOT_BE_DELETED: "users.admin_cannot_be_deleted",
+  USERS_ADMIN_CANNOT_BE_UPDATED: "users.admin_cannot_be_updated",
+  USERS_ONLY_ADMIN_CAN_CREATE_ADMIN: "users.only_admin_can_create_admin",
+  VALIDATION_INVALID_BODY: "validation.invalid_body",
+  VALIDATION_PASSWORD_MIN_LENGTH: "validation.password_min_length",
+  VALIDATION_PASSWORD_UPPERCASE: "validation.password_uppercase",
+  VALIDATION_PASSWORD_NUMBER: "validation.password_number",
+  VALIDATION_PASSWORD_SPECIAL: "validation.password_special",
+  RATE_LIMIT_EXCEEDED: "rate_limit.exceeded",
+  INTERNAL_SERVER_ERROR: "internal.server_error",
+};
+
 const getJwtSecret = () => {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("JWT_SECRET is required");
@@ -12,6 +33,7 @@ const getJwtExpiresIn = () => process.env.JWT_EXPIRES_IN || "24h";
 
 module.exports = {
   ADMIN_EMAIL,
+  ERROR_KEYS,
   getJwtSecret,
   getJwtExpiresIn,
 };
