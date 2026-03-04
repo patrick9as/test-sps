@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import useMediaQuery from "../hooks/useMediaQuery";
 import Card from "../components/Card";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 
@@ -18,10 +19,31 @@ const wrapperStyle = {
   background: "linear-gradient(to bottom right, #2f73b2, #000)",
 };
 
+const wrapperStyleMobile = {
+  ...wrapperStyle,
+  padding: "0.75rem 1rem 5.5rem 1rem",
+  justifyContent: "center",
+  overflowY: "auto",
+};
+
 const languageSwitcherWrapperStyle = {
   position: "absolute",
   top: "1rem",
   right: "1rem",
+};
+
+const languageBarMobileStyle = {
+  position: "fixed",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  padding: "1rem",
+  backgroundColor: "rgba(0,0,0,0.4)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 1000,
+  boxSizing: "border-box",
 };
 
 const formGroupStyle = { marginBottom: "1rem" };
@@ -33,6 +55,11 @@ const inputStyle = {
   borderRadius: "8px",
   border: "1px solid #ccc",
   fontSize: "0.9rem",
+};
+const inputStyleMobile = {
+  ...inputStyle,
+  minHeight: "44px",
+  fontSize: "16px",
 };
 const buttonStyle = {
   width: "100%",
@@ -46,11 +73,17 @@ const buttonStyle = {
   fontFamily: "inherit",
   fontSize: "1rem",
 };
+const buttonStyleMobile = {
+  ...buttonStyle,
+  minHeight: "44px",
+  padding: "0.75rem 1rem",
+};
 
 function SignIn() {
   const navigate = useNavigate();
   const { login, isLoggedIn } = useAuth();
   const { t } = useLanguage();
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -75,13 +108,28 @@ function SignIn() {
     }
   };
 
+  const logoStyle = isMobile
+    ? { marginBottom: "1.5rem", maxWidth: "18rem", height: "auto", display: "block", marginLeft: "auto", marginRight: "auto" }
+    : { marginBottom: "4rem", maxWidth: "24rem", height: "auto" };
+
+  const cardWrapperStyleMobile = { width: "100%", maxWidth: "100%", display: "flex", justifyContent: "center" };
+
   return (
-    <div style={wrapperStyle}>
-      <div style={languageSwitcherWrapperStyle}>
-        <LanguageSwitcher variant="light" />
-      </div>
-      <img src="/SPS.png" alt="SPS" style={{ marginBottom: "4rem", maxWidth: "24rem", height: "auto" }} />
-      <Card title={t("login.title")} minWidth="320px">
+    <div style={isMobile ? wrapperStyleMobile : wrapperStyle}>
+      {!isMobile && (
+        <div style={languageSwitcherWrapperStyle}>
+          <LanguageSwitcher variant="light" />
+        </div>
+      )}
+      <img src="/SPS.png" alt="SPS" style={logoStyle} />
+      <div style={isMobile ? cardWrapperStyleMobile : undefined}>
+        <Card
+          title={t("login.title")}
+          minWidth={isMobile ? undefined : "320px"}
+          padding={isMobile ? "2rem 1.25rem" : undefined}
+          borderRadius={isMobile ? "16px" : undefined}
+          style={isMobile ? { width: "100%" } : undefined}
+        >
         <form onSubmit={handleSubmit}>
           <div style={formGroupStyle}>
             <label htmlFor="email" style={labelStyle}>
@@ -93,7 +141,7 @@ function SignIn() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
-              style={inputStyle}
+              style={isMobile ? inputStyleMobile : inputStyle}
             />
           </div>
           <div style={formGroupStyle}>
@@ -106,7 +154,7 @@ function SignIn() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
-              style={inputStyle}
+              style={isMobile ? inputStyleMobile : inputStyle}
             />
           </div>
           {error && (
@@ -121,11 +169,17 @@ function SignIn() {
               )}
             </div>
           )}
-          <button type="submit" style={buttonStyle}>
+          <button type="submit" style={isMobile ? buttonStyleMobile : buttonStyle}>
             {t("login.submit")}
           </button>
         </form>
       </Card>
+      </div>
+      {isMobile && (
+        <div style={languageBarMobileStyle}>
+          <LanguageSwitcher variant="light" size="large" />
+        </div>
+      )}
     </div>
   );
 }
