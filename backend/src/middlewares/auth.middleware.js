@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { getJwtSecret } = require("../config/constants");
+const { ERROR_KEYS, getJwtSecret } = require("../config/constants");
 const { sendError } = require("../utils/errors");
 
 /**
@@ -9,7 +9,7 @@ const { sendError } = require("../utils/errors");
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return sendError(res, 401, "auth.invalid_token");
+    return sendError(res, 401, ERROR_KEYS.AUTH_INVALID_TOKEN);
   }
   const token = authHeader.slice(7);
   try {
@@ -22,7 +22,7 @@ function authMiddleware(req, res, next) {
     };
     next();
   } catch {
-    return sendError(res, 401, "auth.invalid_token");
+    return sendError(res, 401, ERROR_KEYS.AUTH_INVALID_TOKEN);
   }
 }
 

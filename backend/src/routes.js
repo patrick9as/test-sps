@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const rateLimit = require("express-rate-limit");
+const { ERROR_KEYS } = require("./config/constants");
 const authController = require("./controllers/auth.controller");
 const usersController = require("./controllers/users.controller");
 const { authMiddleware } = require("./middlewares/auth.middleware");
@@ -16,7 +17,7 @@ function rateLimitHandler(req, res) {
       ? Math.floor(info.resetTime.getTime() / 1000)
       : info.resetTime;
   res.status(429).json({
-    error: "rate_limit.exceeded",
+    error: ERROR_KEYS.RATE_LIMIT_EXCEEDED,
     remaining: info.remaining ?? 0,
     limit: info.limit ?? 100,
     resetAt,

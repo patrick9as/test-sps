@@ -1,12 +1,13 @@
 const { z } = require("zod");
+const { ERROR_KEYS } = require("../config/constants");
 
 // Regras de senha: mínimo 7 caracteres, pelo menos 1 maiúscula, 1 número e 1 caractere especial
 const passwordSchema = z
   .string()
-  .min(7, "validation.password_min_length")
-  .refine((s) => /[A-Z]/.test(s), { message: "validation.password_uppercase" })
-  .refine((s) => /[0-9]/.test(s), { message: "validation.password_number" })
-  .refine((s) => /[^a-zA-Z0-9]/.test(s), { message: "validation.password_special" });
+  .min(7, ERROR_KEYS.VALIDATION_PASSWORD_MIN_LENGTH)
+  .refine((s) => /[A-Z]/.test(s), { message: ERROR_KEYS.VALIDATION_PASSWORD_UPPERCASE })
+  .refine((s) => /[0-9]/.test(s), { message: ERROR_KEYS.VALIDATION_PASSWORD_NUMBER })
+  .refine((s) => /[^a-zA-Z0-9]/.test(s), { message: ERROR_KEYS.VALIDATION_PASSWORD_SPECIAL });
 
 const loginSchema = z.object({
   email: z.string().email(),

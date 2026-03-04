@@ -60,6 +60,10 @@ PORTUGUÊS
 - Copie `.env.example` para `.env` e defina `PORT`, `JWT_SECRET` e opcionalmente `JWT_EXPIRES_IN`.
 - Único endpoint **público**: `POST /login`. Todas as demais rotas exigem header `Authorization: Bearer <token>`.
 
+### Constantes (i18n)
+
+- As chaves de erro e mensagem usadas nas respostas da API estão centralizadas em `src/config/constants.js` no objeto **ERROR_KEYS**. O código usa essas constantes em vez de strings soltas; ao adicionar nova chave para o frontend traduzir, definir em ERROR_KEYS e usar a constante nos controllers, middlewares e validators.
+
 ### Endpoints
 
 | Método   | Rota        | Auth | Descrição                          |
