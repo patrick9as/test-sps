@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import UserService from "../services/UserService";
+import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import Grid from "../components/Grid";
 import Card from "../components/Card";
+import Modal from "../components/Modal";
+import UserFormFields from "../components/UserFormFields";
 
 const pageStyle = {
   padding: "0.5rem 0",
-  minHeight: "100vh",
   boxSizing: "border-box",
 };
 
@@ -26,6 +28,40 @@ const deleteButtonStyle = {
   alignItems: "center",
 };
 
+const fabStyle = {
+  position: "fixed",
+  right: "1.5rem",
+  bottom: "1.5rem",
+  width: "80px",
+  height: "80px",
+  minWidth: "80px",
+  minHeight: "80px",
+  borderRadius: "50%",
+  backgroundColor: "#2f73b2",
+  color: "#fff",
+  border: "none",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "2.5rem",
+  lineHeight: 1,
+  zIndex: 1000,
+  boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+};
+
+const submitButtonStyle = {
+  padding: "0.65rem 1.75rem",
+  marginTop: "0.5rem",
+  backgroundColor: "#2f73b2",
+  color: "#fff",
+  border: "none",
+  borderRadius: "9999px",
+  cursor: "pointer",
+  fontFamily: "inherit",
+  fontSize: "1.1rem",
+};
+
 const pencilIcon = (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -41,9 +77,56 @@ const closeIcon = (
 
 function Users() {
   const { t } = useLanguage();
+  const { user: authUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [createName, setCreateName] = useState("");
+  const [createEmail, setCreateEmail] = useState("");
+  const [createType, setCreateType] = useState("user");
+  const [createPassword, setCreatePassword] = useState("");
+  const [createConfirmPassword, setCreateConfirmPassword] = useState("");
+
+  const canChangeType = authUser?.type === "admin";
+
+  const clearCreateForm = () => {
+    setCreateName("");
+    setCreateEmail("");
+    setCreateType("user");
+    setCreatePassword("");
+    setCreateConfirmPassword("");
+  };
+
+  const handleCreateSubmit = async (e) => {
+    e.preventDefault();
+    if (createPassword !== createConfirmPassword) return;
+    try {
+      const response = await UserService.create({
+        name: createName,
+        email: createEmail,
+        type: createType,
+        password: createPassword,
+      });
+      toast.success(t("users.created"));
+      setUsers((prev) => [...prev, response.data.data]);
+      setModalOpen(false);
+      clearCreateForm();
+    } catch (err) {
+      const key = err.response?.data?.error;
+      const data = err.response?.data?.data;
+      const isPasswordValidation =
+        key === "validation.invalid_body" &&
+        Array.isArray(data) &&
+        data?.some((item) => item.path === "password");
+      const message = isPasswordValidation
+        ? t("validation.password_requirements_not_met")
+        : key
+          ? t(key)
+          : t("internal.server_error");
+      toast.error(message);
+    }
+  };
 
   const handleDelete = async (user) => {
     try {
@@ -95,9 +178,59 @@ function Users() {
     );
   }
 
+  const handleCreateFieldChange = (field, value) => {
+    if (field === "name") setCreateName(value);
+    else if (field === "email") setCreateEmail(value);
+    else if (field === "type") setCreateType(value);
+    else if (field === "password") setCreatePassword(value);
+    else if (field === "confirmPassword") setCreateConfirmPassword(value);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    clearCreateForm();
+  };
+
   return (
     <div style={pageStyle}>
       <h1 style={titleStyle}>{t("users.pageTitle")}</h1>
+      {!loading && !error && (
+        <button
+          type="button"
+          style={fabStyle}
+          onClick={() => setModalOpen(true)}
+          title={t("users.newUser")}
+          aria-label={t("users.newUser")}
+        >
+          +
+        </button>
+      )}
+      <Modal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        title={t("users.createTitle")}
+      >
+        <form onSubmit={handleCreateSubmit}>
+          <UserFormFields
+            mode="create"
+            values={{
+              name: createName,
+              email: createEmail,
+              type: createType,
+              password: createPassword,
+              confirmPassword: createConfirmPassword,
+            }}
+            onChange={handleCreateFieldChange}
+            canChangeType={canChangeType}
+            idPrefix="user-create"
+          />
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "0.5rem" }}>
+            <button type="submit" style={submitButtonStyle}>
+              {t("users.register")}
+            </button>
+          </div>
+        </form>
+      </Modal>
       {users.length === 0 ? (
         <p>{t("users.empty")}</p>
       ) : (
