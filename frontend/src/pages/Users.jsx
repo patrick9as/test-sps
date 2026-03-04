@@ -352,7 +352,7 @@ function Users() {
                     right: 0,
                     display: "flex",
                     alignItems: "center",
-                    gap: "0.25rem",
+                    gap: "0.75rem",
                   }}
                 >
                   <Link

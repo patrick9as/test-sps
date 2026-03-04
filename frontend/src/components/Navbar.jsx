@@ -102,6 +102,15 @@ const menuPanelStyleMobile = {
   boxShadow: "0 -4px 12px rgba(0,0,0,0.3)",
 };
 
+const languagePanelStyleMobile = {
+  ...menuPanelStyleMobile,
+  left: 0,
+  right: 0,
+  minWidth: "auto",
+  padding: "1.25rem 1rem",
+  alignItems: "center",
+};
+
 const hamburgerButtonStyle = {
   padding: "0.35rem",
   border: "none",
@@ -229,8 +238,8 @@ function Navbar() {
                   onClick={() => setLanguagePanelOpen(false)}
                   aria-hidden
                 />
-                <div style={menuPanelStyleMobile}>
-                  <LanguageSwitcher variant="light" onLanguageChange={() => setLanguagePanelOpen(false)} />
+                <div style={languagePanelStyleMobile}>
+                  <LanguageSwitcher variant="light" size="large" onLanguageChange={() => setLanguagePanelOpen(false)} />
                 </div>
               </>
             )}
