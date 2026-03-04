@@ -125,6 +125,8 @@ A aplicação tem **dois modos de execução**. Escolha um:
 
 **Resumo:** para rodar com Postgres, **sempre execute o comando do compose antes** de rodar `npm run dev:postgres`. Na raiz, `npm run docker:up` (ou `docker:up:d`) delega para o backend, onde o compose é executado.
 
+Para saber em qual modo o backend está rodando, acesse **`GET /health`** na API: a resposta inclui o campo `storage` (`"memory"` ou `"postgres"`).
+
 ---
 
 ### O que sobe em ambos os modos
@@ -142,7 +144,7 @@ Em qualquer um dos modos acima, sobem em paralelo:
 ## API (backend)
 
 - **Único endpoint público:** `POST /login`. Demais rotas exigem header `Authorization: Bearer <token>`.
-- **Health:** `GET /health` — retorna `{ "data": { "status": "ok" } }`.
+- **Health:** `GET /health` — retorna `{ "data": { "status": "ok", "storage": "memory" | "postgres" } }`. O campo `storage` indica em qual modo o backend está rodando; útil para confirmar se está em memória ou Postgres.
 - **Usuários:** `GET /users`, `GET /users/:id`, `POST /users`, `PUT /users/:id`, `DELETE /users/:id` (todos com auth).
 - Respostas de sucesso com dados usam `{ "data": ... }`; erros usam `{ "error": "chave_i18n" }` para o frontend traduzir.
 - **Rate limit:** 100 req/15 min global; login: 5 tentativas (falhas) por 15 min.
