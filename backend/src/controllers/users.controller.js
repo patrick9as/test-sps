@@ -57,6 +57,9 @@ async function update(req, res) {
     return sendError(res, 404, "users.not_found");
   }
   const updates = { ...parsed.data };
+  if (updates.type === "admin" && req.user.type !== "admin") {
+    return sendError(res, 403, "users.only_admin_can_create_admin");
+  }
   if (updates.password) {
     updates.passwordHash = await bcrypt.hash(updates.password, 10);
     delete updates.password;

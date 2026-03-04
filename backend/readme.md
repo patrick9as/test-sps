@@ -69,7 +69,7 @@ PORTUGUÊS
 | GET      | /users      | Sim  | Lista usuários. Resposta: `{ "data": [ { "id", "name", "email", "type" }, ... ] }` |
 | GET      | /users/:id  | Sim  | Um usuário. Resposta: `{ "data": { "id", "name", "email", "type" } }` |
 | POST     | /users      | Sim  | Criar usuário. Body: `{ "name", "email", "type", "password" }`. Resposta: `{ "data": { ... } }` |
-| PUT      | /users/:id  | Sim  | Atualizar (próprio usuário ou outro se for admin). Apenas o admin padrão (admin@spsgroup.com.br) não pode ser alterado; outros usuários (inclusive outros admins) podem alterar o próprio cargo, ex.: de admin para user. |
+| PUT      | /users/:id  | Sim  | Atualizar (próprio usuário ou outro se for admin). Apenas admin pode definir alguém como admin; user não pode se promover nem promover outros. Admin padrão (admin@spsgroup.com.br) não pode ser alterado. |
 | DELETE   | /users/:id  | Sim  | Excluir outro usuário (admin pode excluir qualquer um; usuário não pode excluir a si mesmo nem o admin padrão). Resposta: `{ "message": "users.deleted" }`. |
 
 **Convenção de resposta:** quando há dados (objeto, lista, token), usar `{ "data": ... }`; quando é apenas mensagem para i18n, usar `{ "message": "chave" }` na raiz.
