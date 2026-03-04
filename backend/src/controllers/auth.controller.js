@@ -12,7 +12,7 @@ async function login(req, res) {
   const parsed = loginSchema.safeParse(req.body);
   if (!parsed.success) {
     return sendError(res, 400, "validation.invalid_body", {
-      errors: formatZodErrors(parsed.error),
+      data: formatZodErrors(parsed.error),
     });
   }
   const { email, password } = parsed.data;

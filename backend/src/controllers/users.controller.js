@@ -25,7 +25,7 @@ async function create(req, res) {
   const parsed = createUserSchema.safeParse(req.body);
   if (!parsed.success) {
     return sendError(res, 400, "validation.invalid_body", {
-      errors: formatZodErrors(parsed.error),
+      data: formatZodErrors(parsed.error),
     });
   }
   const { name, email, type, password } = parsed.data;
@@ -48,7 +48,7 @@ async function update(req, res) {
   const parsed = updateUserSchema.safeParse(req.body);
   if (!parsed.success) {
     return sendError(res, 400, "validation.invalid_body", {
-      errors: formatZodErrors(parsed.error),
+      data: formatZodErrors(parsed.error),
     });
   }
   const existing = userRepository.findByIdWithPassword(id);
