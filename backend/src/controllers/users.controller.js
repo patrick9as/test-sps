@@ -42,6 +42,7 @@ async function create(req, res) {
 
 async function update(req, res) {
   const { id } = req.params;
+  // Apenas o admin padrão (admin@spsgroup.com.br) não pode ser alterado; outros admins podem alterar o próprio cargo (ex.: admin → user).
   if (userRepository.isDefaultAdminId(id)) {
     return sendError(res, 403, "users.admin_cannot_be_updated");
   }
