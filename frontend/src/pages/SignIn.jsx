@@ -77,7 +77,7 @@ function SignIn() {
         <LanguageSwitcher variant="light" />
       </div>
       <img src="/SPS.png" alt="SPS" style={{ marginBottom: "4rem", maxWidth: "24rem", height: "auto" }} />
-      <Card title={t("login.title")}>
+      <Card title={t("login.title")} minWidth="320px">
         <form onSubmit={handleSubmit}>
           <div style={formGroupStyle}>
             <label htmlFor="email" style={labelStyle}>

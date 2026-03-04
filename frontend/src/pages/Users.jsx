@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import UserService from "../services/UserService";
 import { useLanguage } from "../contexts/LanguageContext";
 import Grid from "../components/Grid";
+import Card from "../components/Card";
 
 const pageStyle = {
   padding: "0.5rem 0",
@@ -11,14 +12,6 @@ const pageStyle = {
 };
 
 const titleStyle = { marginTop: 0, marginBottom: "1.5rem" };
-
-const cardStyle = {
-  padding: "1rem",
-  borderRadius: "8px",
-  boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-  backgroundColor: "#fff",
-  border: "1px solid #eee",
-};
 
 const linkStyle = { color: "#2f73b2", textDecoration: "none", fontSize: "0.9rem" };
 
@@ -76,14 +69,20 @@ function Users() {
         <Grid
           items={users}
           renderItem={(user) => (
-            <div style={cardStyle}>
+            <Card
+              padding="1rem"
+              borderRadius="8px"
+              boxShadow="0 1px 4px rgba(0,0,0,0.1)"
+              border="1px solid #eee"
+              minWidth={undefined}
+            >
               <div><strong>{user.name}</strong></div>
               <div style={{ marginTop: "0.25rem", fontSize: "0.9rem" }}>{user.email}</div>
               <div style={{ marginTop: "0.25rem", fontSize: "0.85rem", color: "#666" }}>{user.type}</div>
               <Link to={`/users/${user.id}`} style={{ ...linkStyle, display: "inline-block", marginTop: "0.5rem" }}>
                 Editar
               </Link>
-            </div>
+            </Card>
           )}
         />
       )}

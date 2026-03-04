@@ -10,10 +10,12 @@ function Grid({ items = [], renderItem, keyExtractor = (item) => item.id, ...res
     padding: 0,
   };
 
+  const cellStyle = { minWidth: 0 };
+
   return (
     <div style={{ ...gridStyle, ...rest.style }} {...rest}>
       {items.map((item) => (
-        <div key={keyExtractor(item)}>{renderItem(item)}</div>
+        <div key={keyExtractor(item)} style={cellStyle}>{renderItem(item)}</div>
       ))}
     </div>
   );
