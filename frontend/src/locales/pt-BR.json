@@ -50,5 +50,6 @@
   "users.passwordMismatch": "As senhas não coincidem.",
   "common.home": "Início",
   "common.helloUser": "Bem-vindo, {{name}}!",
-  "common.logout": "Sair"
+  "common.logout": "Sair",
+  "common.language": "Idioma"
 }
