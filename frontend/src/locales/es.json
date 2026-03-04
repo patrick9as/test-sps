@@ -23,5 +23,6 @@
   "login.errorGeneric": "No se pudo iniciar sesión. Intente de nuevo.",
   "users.pageTitle": "Usuarios",
   "users.loading": "Cargando...",
-  "users.empty": "No hay usuarios."
+  "users.empty": "No hay usuarios.",
+  "common.logout": "Salir"
 }

@@ -23,5 +23,6 @@
   "login.errorGeneric": "Could not sign in. Please try again.",
   "users.pageTitle": "Users",
   "users.loading": "Loading...",
-  "users.empty": "No users found."
+  "users.empty": "No users found.",
+  "common.logout": "Log out"
 }

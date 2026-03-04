@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserService from "../services/UserService";
+import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import Grid from "../components/Grid";
 import LanguageSwitcher from "../components/LanguageSwitcher";
@@ -24,7 +25,20 @@ const cardStyle = {
 
 const linkStyle = { color: "#2f73b2", textDecoration: "none", fontSize: "0.9rem" };
 
+const logoutButtonStyle = {
+  marginLeft: "1rem",
+  padding: "0.35rem 0.75rem",
+  fontSize: "0.9rem",
+  border: "1px solid #ccc",
+  borderRadius: "6px",
+  background: "#fff",
+  cursor: "pointer",
+  color: "#333",
+};
+
 function Users() {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const { t } = useLanguage();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,12 +65,24 @@ function Users() {
     return () => { cancelled = true; };
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
+  const headerActions = (
+    <div style={{ position: "absolute", top: "1rem", right: "1rem", display: "flex", alignItems: "center" }}>
+      <LanguageSwitcher variant="dark" />
+      <button type="button" style={logoutButtonStyle} onClick={handleLogout}>
+        {t("common.logout")}
+      </button>
+    </div>
+  );
+
   if (loading) {
     return (
       <div style={pageStyle}>
-        <div style={{ position: "absolute", top: "1rem", right: "1rem" }}>
-          <LanguageSwitcher variant="dark" />
-        </div>
+        {headerActions}
         <h1 style={titleStyle}>{t("users.pageTitle")}</h1>
         <p>{t("users.loading")}</p>
       </div>
@@ -66,9 +92,7 @@ function Users() {
   if (error) {
     return (
       <div style={pageStyle}>
-        <div style={{ position: "absolute", top: "1rem", right: "1rem" }}>
-          <LanguageSwitcher variant="dark" />
-        </div>
+        {headerActions}
         <h1 style={titleStyle}>{t("users.pageTitle")}</h1>
         <p style={{ color: "#c00" }}>{error}</p>
       </div>
@@ -77,9 +101,7 @@ function Users() {
 
   return (
     <div style={pageStyle}>
-      <div style={{ position: "absolute", top: "1rem", right: "1rem" }}>
-        <LanguageSwitcher variant="dark" />
-      </div>
+      {headerActions}
       <h1 style={titleStyle}>{t("users.pageTitle")}</h1>
       {users.length === 0 ? (
         <p>{t("users.empty")}</p>
