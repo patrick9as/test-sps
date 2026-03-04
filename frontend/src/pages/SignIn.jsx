@@ -7,6 +7,7 @@ const centerStyle = {
   position: "fixed",
   inset: 0,
   display: "flex",
+  flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
   padding: "1rem",
@@ -56,6 +57,7 @@ function SignIn() {
 
   return (
     <div style={centerStyle}>
+      <img src="/SPS.png" alt="SPS" style={{ marginBottom: "4rem", maxWidth: "24rem", height: "auto" }} />
       <Card title="Login">
         <form onSubmit={handleSubmit}>
           <div style={formGroupStyle}>
