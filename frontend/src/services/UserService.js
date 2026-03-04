@@ -2,7 +2,8 @@ import axios from "axios";
 
 class UserService {
   async list() {
-    const users = await axios.get(`${process.env.REACT_APP_SERVER_URL}/users`);
+    const baseURL = import.meta.env.VITE_SERVER_URL || "";
+    const users = await axios.get(`${baseURL}/users`);
     return users;
   }
   async get(id) {
