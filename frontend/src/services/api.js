@@ -5,6 +5,9 @@ export const AUTH_USER_KEY = "auth_user";
 
 const baseURL = import.meta.env.VITE_SERVER_URL || "";
 
+/** URL da documentação Swagger (abre em nova aba). */
+export const getApiDocsUrl = () => (baseURL.replace(/\/$/, "") || "http://localhost:3000") + "/api-docs";
+
 const api = axios.create({ baseURL });
 
 api.interceptors.request.use((config) => {

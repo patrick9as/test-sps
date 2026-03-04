@@ -58,5 +58,6 @@
   "common.home": "Home",
   "common.helloUser": "Welcome, {{name}}!",
   "common.logout": "Log out",
-  "common.language": "Language"
+  "common.language": "Language",
+  "common.apiDocs": "API documentation"
 }

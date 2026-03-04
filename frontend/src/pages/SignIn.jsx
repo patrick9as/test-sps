@@ -10,6 +10,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import useMediaQuery from "../hooks/useMediaQuery";
 import Card from "../components/Card";
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import { getApiDocsUrl } from "../services/api";
 
 /* Estilos do container principal (desktop: tudo centralizado; mobile: padding inferior para a barra de idiomas) */
 const wrapperStyle = {
@@ -181,6 +182,16 @@ function SignIn() {
           <button type="submit" style={isMobile ? buttonStyleMobile : buttonStyle}>
             {t("login.submit")}
           </button>
+          <p style={{ marginTop: "1rem", marginBottom: 0, textAlign: "center" }}>
+            <a
+              href={getApiDocsUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#2f73b2", fontSize: "0.9rem", textDecoration: "none" }}
+            >
+              {t("common.apiDocs")}
+            </a>
+          </p>
         </form>
       </Card>
       </div>
