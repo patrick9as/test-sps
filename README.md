@@ -50,6 +50,8 @@ Antes de executar `npm run dev`, é necessário configurar as variáveis de ambi
    | `PG_PASSWORD`    | Se `STORAGE=postgres` | Senha do banco |
    | `PG_DATABASE`    | Se `STORAGE=postgres` | Nome do banco (ex.: `SPS_TEST`) |
 
+   **Importante para o modo Postgres:** o Docker Compose usa o **`backend/.env`** para criar o container do banco: ele lê `PG_USER`, `PG_PASSWORD`, `PG_DATABASE` e `PG_PORT` daqui. Ou seja, a senha e as demais configurações do PostgreSQL são definidas neste arquivo; configure-as antes de rodar `npm run docker:up` ou `docker:up:d`.
+
    Exemplo (só memória):
    ```
    PORT=3000
@@ -121,7 +123,7 @@ A aplicação tem **dois modos de execução**. Escolha um:
      npm run dev:postgres
      ```
 
-- **Requisitos:** Docker instalado; `backend/.env` com `STORAGE=postgres` e as variáveis `PG_HOST`, `PG_PORT`, `PG_USER`, `PG_PASSWORD`, `PG_DATABASE` (conforme `backend/.env.example`). Na primeira subida o backend aplica as migrations e cria o usuário admin padrão. O `docker-compose.yml` fica em **`backend/`** e lê essas variáveis do próprio `backend/.env`; defina `PG_PASSWORD` (e as demais) apenas no seu `.env` local, sem commitar.
+- **Requisitos:** Docker instalado; `backend/.env` com `STORAGE=postgres` e as variáveis `PG_HOST`, `PG_PORT`, `PG_USER`, `PG_PASSWORD`, `PG_DATABASE` (conforme `backend/.env.example`). Na primeira subida o backend aplica as migrations e cria o usuário admin padrão. O `docker-compose.yml` fica em **`backend/`** e, ao subir o container, **usa o `backend/.env` para criar o banco** (usuário, senha e nome do banco vêm das variáveis `PG_*`). Defina `PG_PASSWORD` e as demais apenas no seu `.env` local, sem commitar.
 
 **Resumo:** para rodar com Postgres, **sempre execute o comando do compose antes** de rodar `npm run dev:postgres`. Na raiz, `npm run docker:up` (ou `docker:up:d`) delega para o backend, onde o compose é executado.
 
