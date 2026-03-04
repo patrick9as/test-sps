@@ -1,0 +1,290 @@
+openapi: 3.0.3
+info:
+  title: API SPS
+  version: 1.0.0
+  description: API REST de usuários com autenticação JWT. Health check, login e CRUD de usuários.
+
+servers:
+  - url: /
+    description: Servidor local (use a porta do backend, ex. http://localhost:3000)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token obtido em POST /login
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador único do usuário
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        type:
+          type: string
+          enum: [admin, user]
+      required: [id, name, email, type]
+
+    HealthData:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        storage:
+          type: string
+          enum: [memory, postgres]
+          description: Modo de armazenamento em que o backend está rodando
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+
+    LoginResponseData:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT para usar em Authorization Bearer
+        user:
+          $ref: "#/components/schemas/User"
+
+    CreateUserRequest:
+      type: object
+      required: [name, email, type, password]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+        type:
+          type: string
+          enum: [admin, user]
+        password:
+          type: string
+          minLength: 7
+          description: "Mínimo 7 caracteres, 1 maiúscula, 1 número, 1 caractere especial"
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+        type:
+          type: string
+          enum: [admin, user]
+        password:
+          type: string
+          minLength: 7
+          description: "Mínimo 7 caracteres, 1 maiúscula, 1 número, 1 caractere especial"
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Chave i18n para o frontend traduzir
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: string
+              message:
+                type: string
+        remaining:
+          type: integer
+          description: Tentativas restantes (ex. em respostas de login)
+
+security:
+  - bearerAuth: []
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Verifica se o servidor está funcionando e em qual modo de armazenamento (memory ou postgres).
+      security: []
+      responses:
+        "200":
+          description: Servidor ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/HealthData"
+
+  /login:
+    post:
+      summary: Login
+      description: Autentica com email e senha. Retorna token JWT e dados do usuário. Limitado a 5 tentativas falhas por 15 min (rate limit).
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login bem-sucedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/LoginResponseData"
+        "400":
+          description: Body inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit excedido (muitas tentativas de login)
+
+  /users:
+    get:
+      summary: Listar usuários
+      description: Retorna todos os usuários (sem senha). Requer autenticação.
+      responses:
+        "200":
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+        "401":
+          description: Token ausente ou inválido
+    post:
+      summary: Criar usuário
+      description: Apenas admin pode criar usuário tipo admin. Requer autenticação.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+      responses:
+        "201":
+          description: Usuário criado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Validação falhou
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Apenas admin pode criar usuário tipo admin
+        "409":
+          description: Email já cadastrado
+
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Obter usuário por ID
+      responses:
+        "200":
+          description: Usuário encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/User"
+        "401":
+          description: Token ausente ou inválido
+        "404":
+          description: Usuário não encontrado
+    put:
+      summary: Atualizar usuário
+      description: Admin pode atualizar qualquer usuário; user só a si mesmo. Usuário admin padrão não pode ser alterado.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequest"
+      responses:
+        "200":
+          description: Usuário atualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Validação falhou
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Sem permissão ou usuário padrão não pode ser modificado
+        "404":
+          description: Usuário não encontrado
+    delete:
+      summary: Excluir usuário
+      description: Não é possível excluir a si mesmo nem o usuário admin padrão. Admin pode excluir outros.
+      responses:
+        "200":
+          description: Usuário excluído
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Não pode excluir a si mesmo ou o admin padrão
+        "404":
+          description: Usuário não encontrado

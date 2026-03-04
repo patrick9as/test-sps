@@ -151,6 +151,10 @@ Em qualquer um dos modos acima, sobem em paralelo:
 - Respostas de sucesso com dados usam `{ "data": ... }`; erros usam `{ "error": "chave_i18n" }` para o frontend traduzir.
 - **Rate limit:** 100 req/15 min global; login: 5 tentativas (falhas) por 15 min.
 
+### Documentação interativa (Swagger)
+
+A documentação OpenAPI (Swagger) da API está disponível em **`GET /api-docs`** (ex.: `http://localhost:3000/api-docs` com a porta do backend). Lá você pode ver todos os endpoints, schemas e testar as requisições. Para testar rotas protegidas (usuários), use o botão **Authorize**, informe o token JWT obtido em **POST /login** (no formato Bearer) e em seguida execute as chamadas desejadas. A spec bruta pode ser acessada em **`GET /api-docs.json`**.
+
 ## Collection Postman (API)
 
 Há uma collection do Postman para testar a API do backend em **`backend/SPS Test.postman_collection.json`**.
