@@ -38,8 +38,9 @@ routes.use(limiter);
 
 // Rotas públicas
 routes.get("/health", (_, res) => {
-  // Health check - verifica se o servidor está funcionando
-  res.json({ data: { status: "ok" } });
+  // Health check - verifica se o servidor está funcionando e em qual modo de armazenamento
+  const storage = process.env.STORAGE || "memory";
+  res.json({ data: { status: "ok", storage } });
 });
 
 // Rota de login - autenticação (limitada a 5 falhas por 15 min)

@@ -10,14 +10,14 @@ const { sendError } = require("../utils/errors");
 
 async function list(_, res) {
   // Busca todos os usuários
-  const users = userRepository.findAll();
+  const users = await userRepository.findAll();
   res.json({ data: users });
 }
 
 async function getById(req, res) {
   // Busca o usuário pelo ID passado na URL
   const { id } = req.params;
-  const user = userRepository.findById(id);
+  const user = await userRepository.findById(id);
 
   if (!user) {
     // Retorna um erro 404 se o usuário não for encontrado
@@ -45,14 +45,14 @@ async function create(req, res) {
     return sendError(res, 403, ERROR_KEYS.USERS_ONLY_ADMIN_CAN_CREATE_ADMIN);
   }
 
-  if (userRepository.emailExists(email)) {
+  if (await userRepository.emailExists(email)) {
     // Retorna um erro 409 se o email já estiver em uso
     return sendError(res, 409, ERROR_KEYS.AUTH_EMAIL_TAKEN);
   }
 
   // Cria o usuário no repositório com o hash da senha
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = userRepository.create({ name, email, type, passwordHash });
+  const user = await userRepository.create({ name, email, type, passwordHash });
 
   res.status(201).json({ data: user });
 }
@@ -74,7 +74,7 @@ async function update(req, res) {
   }
 
   // Busca o usuário pelo ID passado na URL
-  const existing = userRepository.findByIdWithPassword(id);
+  const existing = await userRepository.findByIdWithPassword(id);
 
   if (!existing) {
     // Retorna um erro 404 se o usuário não for encontrado
@@ -95,7 +95,7 @@ async function update(req, res) {
   }
 
   // Verifica se o email já está em uso
-  if (updates.email && userRepository.emailExists(updates.email, id)) {
+  if (updates.email && (await userRepository.emailExists(updates.email, id))) {
     return sendError(res, 409, ERROR_KEYS.AUTH_EMAIL_TAKEN);
   }
 
@@ -107,7 +107,7 @@ async function update(req, res) {
   if (updates.passwordHash !== undefined) toStore.passwordHash = updates.passwordHash;
 
   // Atualiza o usuário no repositório
-  const user = userRepository.update(id, toStore);
+  const user = await userRepository.update(id, toStore);
 
   res.json({ data: user });
 }
@@ -125,7 +125,7 @@ async function remove(req, res) {
   }
 
   // Verifica se o usuário existe
-  const existed = userRepository.remove(id);
+  const existed = await userRepository.remove(id);
 
   if (!existed) {
     // Retorna um erro 404 se o usuário não for encontrado
