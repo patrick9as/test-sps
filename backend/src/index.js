@@ -10,7 +10,6 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const rateLimit = require("express-rate-limit");
 const routes = require("./routes");
 const userRepository = require("./repositories/user.repository");
 
@@ -18,30 +17,6 @@ const app = express();
 
 app.use(helmet());
 app.use(morgan("dev"));
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // Define o tempo de janela de 15 minutos para novas requisições
-  max: 100, // Define o número máximo de requisições permitidas
-  standardHeaders: true, // Define se os headers padrão devem ser usados
-  handler: (req, res) => {
-    // Obtém as informações da requisição de rate limit
-    const info = req.rateLimit || {};
-
-    // Define o timestamp de reset da janela de rate limit
-    const resetAt = 
-      info.resetTime instanceof Date
-        ? Math.floor(info.resetTime.getTime() / 1000)
-        : info.resetTime;
-    res.status(429).json({
-      error: "rate_limit.exceeded",
-      remaining: info.remaining ?? 0,
-      limit: info.limit ?? 100,
-      resetAt,
-    });
-  },
-});
-app.use(limiter);
-
 app.use(cors());
 app.use(express.json());
 app.use(routes);
