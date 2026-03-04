@@ -4,12 +4,15 @@ import { useAuth } from "../contexts/AuthContext";
 import Card from "../components/Card";
 
 const centerStyle = {
-  minHeight: "100vh",
+  position: "fixed",
+  inset: 0,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   padding: "1rem",
   boxSizing: "border-box",
+  margin: 0,
+  background: "linear-gradient(to bottom right, #2f73b2, #000)",
 };
 
 const formGroupStyle = { marginBottom: "1rem" };
