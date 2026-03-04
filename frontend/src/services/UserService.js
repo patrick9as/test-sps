@@ -6,7 +6,8 @@ class UserService {
     return response;
   }
   async get(id) {
-    throw new Error("Not implemented");
+    const response = await api.get(`/users/${id}`);
+    return response;
   }
   async create(data) {
     throw new Error("Not implemented");
@@ -16,7 +17,8 @@ class UserService {
     return response;
   }
   async update(id, data) {
-    throw new Error("Not implemented");
+    const response = await api.put(`/users/${id}`, data);
+    return response;
   }
 }
 

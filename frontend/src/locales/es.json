@@ -29,6 +29,15 @@
   "users.empty": "No hay usuarios.",
   "users.edit": "Editar",
   "users.delete": "Eliminar",
+  "users.editTitle": "Editar usuario",
+  "users.save": "Guardar",
+  "users.updated": "Usuario actualizado.",
+  "users.name": "Nombre",
+  "users.email": "Correo",
+  "users.type": "Tipo",
+  "users.typeAdmin": "Administrador",
+  "users.typeUser": "Usuario",
+  "users.newPasswordOptional": "Nueva contraseña (dejar en blanco para no cambiar)",
   "common.helloUser": "Bienvenido, {{name}}",
   "common.logout": "Salir"
 }

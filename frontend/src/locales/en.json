@@ -29,6 +29,15 @@
   "users.empty": "No users found.",
   "users.edit": "Edit",
   "users.delete": "Delete",
+  "users.editTitle": "Edit user",
+  "users.save": "Save",
+  "users.updated": "User updated.",
+  "users.name": "Name",
+  "users.email": "Email",
+  "users.type": "Type",
+  "users.typeAdmin": "Administrator",
+  "users.typeUser": "User",
+  "users.newPasswordOptional": "New password (leave blank to keep current)",
   "common.helloUser": "Welcome, {{name}}",
   "common.logout": "Log out"
 }

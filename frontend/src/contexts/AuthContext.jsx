@@ -31,11 +31,23 @@ export function AuthProvider({ children }) {
     localStorage.removeItem(AUTH_USER_KEY);
   };
 
+  const updateUser = (partial) => {
+    if (!partial || !user) return;
+    const next = { ...user, ...partial };
+    setUser(next);
+    const token = next.token;
+    if (token) {
+      const { token: _, ...toStore } = next;
+      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(toStore));
+    }
+  };
+
   const value = {
     user,
     isLoggedIn: !!user?.token,
     login,
     logout,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
