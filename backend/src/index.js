@@ -47,9 +47,11 @@ app.use(express.json());
 app.use(routes);
 
 app.use((err, req, res, next) => {
+  // Verifica se o ambiente de produção não está ativo para não exibir erros sensíveis
   if (process.env.NODE_ENV !== "production") {
     console.error(err);
   }
+  // Define o status 500 e retorna o erro interno do servidor
   res.status(500).json({ error: "internal.server_error" });
 });
 
