@@ -20,5 +20,8 @@
   "login.emailLabel": "Email ou usuário",
   "login.passwordLabel": "Senha",
   "login.submit": "Entrar",
-  "login.errorGeneric": "Não foi possível entrar. Tente novamente."
+  "login.errorGeneric": "Não foi possível entrar. Tente novamente.",
+  "users.pageTitle": "Usuários",
+  "users.loading": "Carregando...",
+  "users.empty": "Nenhum usuário cadastrado."
 }

@@ -20,5 +20,8 @@
   "login.emailLabel": "Correo o usuario",
   "login.passwordLabel": "Contraseña",
   "login.submit": "Entrar",
-  "login.errorGeneric": "No se pudo iniciar sesión. Intente de nuevo."
+  "login.errorGeneric": "No se pudo iniciar sesión. Intente de nuevo.",
+  "users.pageTitle": "Usuarios",
+  "users.loading": "Cargando...",
+  "users.empty": "No hay usuarios."
 }
