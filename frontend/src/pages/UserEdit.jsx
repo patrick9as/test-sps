@@ -195,7 +195,7 @@ function EditUser() {
             <option value="admin">{t("users.typeAdmin")}</option>
           </select>
         </div>
-        <div style={formGroupStyle}>
+        <div style={{ ...formGroupStyle, marginTop: "2rem" }}>
           {!showPasswordFields ? (
             <button
               type="button"
