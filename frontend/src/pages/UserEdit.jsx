@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLoaderData, useParams, useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import UserService from "../services/UserService";
@@ -70,6 +70,17 @@ function EditUser() {
 
   const isAdmin = authUser?.type === "admin";
   const canChangeType = isAdmin;
+
+  useEffect(() => {
+    if (authUser != null && authUser.type !== "admin") {
+      toast.error(t("users.only_admin_can_modify_others"));
+      navigate("/users", { replace: true });
+    }
+  }, [authUser, navigate, t]);
+
+  if (authUser != null && authUser.type !== "admin") {
+    return null;
+  }
 
   if (user === null) {
     return (

@@ -62,6 +62,24 @@ const submitButtonStyle = {
   fontSize: "1.1rem",
 };
 
+const cancelButtonStyle = {
+  padding: "0.5rem 1.25rem",
+  marginRight: "0.5rem",
+  backgroundColor: "transparent",
+  color: "#555",
+  border: "1px solid #ccc",
+  borderRadius: "9999px",
+  cursor: "pointer",
+  fontFamily: "inherit",
+  fontSize: "1rem",
+};
+
+const confirmDeleteButtonStyle = {
+  ...submitButtonStyle,
+  backgroundColor: "#c00",
+  marginTop: 0,
+};
+
 const pencilIcon = (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -88,6 +106,7 @@ function Users() {
   const [createType, setCreateType] = useState("user");
   const [createPassword, setCreatePassword] = useState("");
   const [createConfirmPassword, setCreateConfirmPassword] = useState("");
+  const [userToDelete, setUserToDelete] = useState(null);
 
   const canChangeType = authUser?.type === "admin";
 
@@ -133,6 +152,7 @@ function Users() {
     try {
       await UserService.delete(user.id);
       setUsers((prev) => prev.filter((u) => u.id !== user.id));
+      setUserToDelete(null);
       toast.success(t("users.deleted"));
     } catch (err) {
       const key = err.response?.data?.error;
@@ -210,6 +230,27 @@ function Users() {
         </button>
       )}
       <Modal
+        open={!!userToDelete}
+        onClose={() => setUserToDelete(null)}
+        title={t("users.deleteConfirmTitle")}
+      >
+        <p style={{ margin: "0 0 1rem 0" }}>
+          {userToDelete ? t("users.deleteConfirmMessage", { name: userToDelete.name }) : ""}
+        </p>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+          <button type="button" style={cancelButtonStyle} onClick={() => setUserToDelete(null)}>
+            {t("users.cancel")}
+          </button>
+          <button
+            type="button"
+            style={confirmDeleteButtonStyle}
+            onClick={() => userToDelete && handleDelete(userToDelete)}
+          >
+            {t("users.delete")}
+          </button>
+        </div>
+      </Modal>
+      <Modal
         open={modalOpen}
         onClose={handleCloseModal}
         title={t("users.createTitle")}
@@ -273,7 +314,7 @@ function Users() {
                   <button
                     type="button"
                     style={deleteButtonStyle}
-                    onClick={() => handleDelete(user)}
+                    onClick={() => setUserToDelete(user)}
                     title={t("users.delete")}
                     aria-label={t("users.delete")}
                   >
