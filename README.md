@@ -93,6 +93,8 @@ Isso sobe em paralelo:
 | `npm run dev`         | Sobe backend e frontend em paralelo                     |
 | `npm run dev:backend` | Sobe só o backend                                       |
 | `npm run dev:frontend`| Sobe só o frontend                                      |
+| `npm test` (em `backend`) | Roda os testes unitários (Jest) do backend           |
+| `npm run test:watch` (em `backend`) | Jest em modo watch              |
 
 ## API (backend)
 
@@ -107,6 +109,15 @@ Isso sobe em paralelo:
 - **`npm run dev`** / **`npm start`** — servidor de desenvolvimento (na pasta `frontend` ou via `npm run dev:frontend` na raiz).
 - **`npm run build`** — build de produção em `frontend/dist/`.
 - **`npm run preview`** — preview do build (na pasta `frontend`).
+
+## Testes unitários (Jest – backend)
+
+Os testes unitários do backend usam **Jest** (e **Supertest** para as rotas). Rodam na pasta `backend` e **não exigem** o servidor em execução.
+
+**Rodar os testes** (na pasta `backend`):
+
+- **Uma execução:** `npm test`
+- **Modo watch (re-executa ao salvar):** `npm run test:watch`
 
 ## Testes E2E (Cypress)
 
