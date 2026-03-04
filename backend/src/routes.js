@@ -5,6 +5,7 @@ const authController = require("./controllers/auth.controller");
 const usersController = require("./controllers/users.controller");
 const { authMiddleware } = require("./middlewares/auth.middleware");
 const { requireAdminForOther } = require("./middlewares/admin.middleware");
+const { loginLimiter } = require("./middlewares/loginRateLimit");
 const { asyncHandler } = require("./utils/asyncHandler");
 
 const routes = Router();
@@ -34,15 +35,6 @@ const limiter = rateLimit({
   handler: rateLimitHandler,
 });
 routes.use(limiter);
-
-// Rate limit de login: 5 tentativas (apenas falhas) por 15 min
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  standardHeaders: true,
-  skipSuccessfulRequests: true,
-  handler: rateLimitHandler,
-});
 
 // Rotas públicas
 routes.get("/health", (_, res) => {

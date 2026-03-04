@@ -4,6 +4,7 @@ const { ERROR_KEYS, getJwtSecret, getJwtExpiresIn } = require("../config/constan
 const userRepository = require("../repositories/user.repository");
 const { loginSchema, formatZodErrors } = require("../validators/user.schema");
 const { sendError } = require("../utils/errors");
+const { resetLoginAttempts } = require("../middlewares/loginRateLimit");
 
 /**
  * POST /login - body: { email, password }. Retorna { data: { token } }.
@@ -51,6 +52,7 @@ async function login(req, res) {
     { expiresIn }
   );
 
+  resetLoginAttempts(req);
   const { passwordHash: _, ...publicUser } = user;
   res.status(200).json({ data: { token, user: publicUser } });
 }
