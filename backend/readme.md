@@ -70,7 +70,7 @@ PORTUGUÊS
 | GET      | /users/:id  | Sim  | Um usuário. Resposta: `{ "data": { "id", "name", "email", "type" } }` |
 | POST     | /users      | Sim  | Criar usuário. Body: `{ "name", "email", "type", "password" }`. Resposta: `{ "data": { ... } }` |
 | PUT      | /users/:id  | Sim  | Atualizar (próprio usuário ou outro se for admin). Admin padrão não pode ser alterado. |
-| DELETE   | /users/:id  | Sim  | Excluir (próprio usuário ou outro se for admin). Admin padrão não pode ser excluído. Resposta: `{ "message": "users.deleted" }`. |
+| DELETE   | /users/:id  | Sim  | Excluir outro usuário (admin pode excluir qualquer um; usuário não pode excluir a si mesmo nem o admin padrão). Resposta: `{ "message": "users.deleted" }`. |
 
 **Convenção de resposta:** quando há dados (objeto, lista, token), usar `{ "data": ... }`; quando é apenas mensagem para i18n, usar `{ "message": "chave" }` na raiz.
 
@@ -80,7 +80,7 @@ Todas as respostas de erro usam chaves para o frontend traduzir:
 
 - Formato: `{ "error": "chave" }`. Em validação: `{ "error": "validation.invalid_body", "data": [ { "path", "message" }, ... ] }`.
 - Login (credenciais inválidas): `{ "error": "auth.invalid_credentials", "remaining": number }` — `remaining` é a quantidade de tentativas restantes na janela de rate limit.
-- Chaves: `auth.invalid_credentials`, `auth.invalid_token`, `auth.forbidden`, `auth.email_taken`, `users.not_found`, `users.deleted`, `users.admin_cannot_be_deleted`, `users.admin_cannot_be_updated`, `users.only_admin_can_create_admin`, `validation.invalid_body`, `validation.password_min_length`, `validation.password_uppercase`, `validation.password_number`, `validation.password_special`, `rate_limit.exceeded`, `internal.server_error`.
+- Chaves: `auth.invalid_credentials`, `auth.invalid_token`, `auth.forbidden`, `auth.email_taken`, `users.not_found`, `users.deleted`, `users.cannot_delete_self`, `users.admin_cannot_be_deleted`, `users.admin_cannot_be_updated`, `users.only_admin_can_create_admin`, `validation.invalid_body`, `validation.password_min_length`, `validation.password_uppercase`, `validation.password_number`, `validation.password_special`, `rate_limit.exceeded`, `internal.server_error`.
 - Senha (criação e atualização de usuário): mínimo 7 caracteres, pelo menos uma letra maiúscula, um número e um caractere especial. Em caso de falha, `data[].message` pode ser uma das chaves de senha acima.
 
 ### Rate limit

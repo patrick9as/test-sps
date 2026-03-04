@@ -74,6 +74,9 @@ async function update(req, res) {
 
 async function remove(req, res) {
   const { id } = req.params;
+  if (id === req.user.id) {
+    return sendError(res, 403, "users.cannot_delete_self");
+  }
   if (userRepository.isDefaultAdminId(id)) {
     return sendError(res, 403, "users.admin_cannot_be_deleted");
   }
