@@ -28,24 +28,28 @@ const contentWrapperStyle = {
 const titleStyle = { marginTop: 0, marginBottom: 0 };
 
 const headerRowStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
   marginBottom: "1.5rem",
-  flexWrap: "wrap",
-  gap: "0.75rem",
 };
 
 const submitButtonStyle = {
-  padding: "0.65rem 1.75rem",
-  marginTop: "0.5rem",
+  padding: "1rem 2.5rem",
+  minHeight: "52px",
+  minWidth: "160px",
   backgroundColor: "#2f73b2",
   color: "#fff",
   border: "none",
   borderRadius: "9999px",
   cursor: "pointer",
   fontFamily: "inherit",
-  fontSize: "1.1rem",
+  fontSize: "1.25rem",
+  fontWeight: 600,
+};
+
+/* Container do botão Salvar no fim do formulário, centralizado */
+const submitWrapperStyle = {
+  display: "flex",
+  justifyContent: "center",
+  marginTop: "1.5rem",
 };
 
 /* Barra fixa no mobile com botão Salvar, posicionada acima da navbar (56px) */
@@ -165,11 +169,6 @@ function EditUser() {
         <form onSubmit={handleSubmit} id="user-edit-form">
           <div style={headerRowStyle}>
             <h1 style={titleStyle}>{t("users.editTitle")}</h1>
-            {!isMobile && (
-              <button type="submit" style={submitButtonStyle}>
-                {t("users.save")}
-              </button>
-            )}
           </div>
           <UserFormFields
             mode="edit"
@@ -180,6 +179,13 @@ function EditUser() {
             canChangeType={canChangeType}
             idPrefix="user-edit"
           />
+          {!isMobile && (
+            <div style={submitWrapperStyle}>
+              <button type="submit" style={submitButtonStyle}>
+                {t("users.save")}
+              </button>
+            </div>
+          )}
         </form>
       </div>
       {isMobile && (
