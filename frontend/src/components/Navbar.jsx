@@ -25,6 +25,10 @@ const homeLinkStyle = { display: "flex", alignItems: "center", color: "#fff", te
 
 const rightStyle = { display: "flex", alignItems: "center", gap: "1rem" };
 
+const mobileLeftStyle = { ...leftStyle, flex: 1, minWidth: 0, justifyContent: "flex-start" };
+const mobileCenterStyle = { position: "absolute", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center" };
+const mobileRightStyle = { display: "flex", alignItems: "center", gap: "0.25rem", flex: 1, minWidth: 0, justifyContent: "flex-end" };
+
 const logoutButtonStyle = {
   padding: "0.35rem 0.75rem",
   fontSize: "0.9rem",
@@ -58,6 +62,14 @@ const hamburgerIcon = (
     <line x1="3" y1="6" x2="21" y2="6" />
     <line x1="3" y1="12" x2="21" y2="12" />
     <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
+const languageIcon = (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
   </svg>
 );
 
@@ -107,11 +119,22 @@ function Navbar() {
   const { t } = useLanguage();
   const isMobile = useMediaQuery("(max-width: 767px)");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [languagePanelOpen, setLanguagePanelOpen] = useState(false);
 
   const handleLogout = () => {
     setMenuOpen(false);
     logout();
     navigate("/login", { replace: true });
+  };
+
+  const openLanguagePanel = () => {
+    setMenuOpen(false);
+    setLanguagePanelOpen((prev) => !prev);
+  };
+
+  const openMenu = () => {
+    setLanguagePanelOpen(false);
+    setMenuOpen((prev) => !prev);
   };
 
   const rightContent = (
@@ -121,7 +144,32 @@ function Navbar() {
           {t("common.helloUser", { name: user.name })}
         </span>
       )}
-      <LanguageSwitcher variant="light" />
+      <button
+        type="button"
+        style={hamburgerButtonStyle}
+        onClick={openLanguagePanel}
+        aria-label={t("common.language")}
+        aria-expanded={languagePanelOpen}
+        title={t("common.language")}
+      >
+        {languageIcon}
+      </button>
+      {isLoggedIn && (
+        <button type="button" style={logoutButtonStyle} onClick={handleLogout} title={t("common.logout")}>
+          {logoutIcon}
+          {t("common.logout")}
+        </button>
+      )}
+    </>
+  );
+
+  const menuPanelContent = (
+    <>
+      {isLoggedIn && user?.name && (
+        <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.95rem" }}>
+          {t("common.helloUser", { name: user.name })}
+        </span>
+      )}
       {isLoggedIn && (
         <button type="button" style={logoutButtonStyle} onClick={handleLogout} title={t("common.logout")}>
           {logoutIcon}
@@ -138,33 +186,54 @@ function Navbar() {
   return (
     <>
       <nav style={navStyle}>
-        <div style={leftStyle}>
-          {!isMobile && (
-            <Link to="/" style={logoLinkStyle}>
-              <img src="/SPS.png" alt="SPS Group" style={logoImgStyle} />
-            </Link>
-          )}
-          <Link
-            to="/"
-            style={homeLinkStyle}
-            title={t("common.home")}
-            aria-label={t("common.home")}
-          >
-            {homeIcon}
-          </Link>
-        </div>
         {isMobile ? (
           <>
-            <button
-              type="button"
-              style={hamburgerButtonStyle}
-              onClick={() => setMenuOpen((prev) => !prev)}
-              aria-label="Menu"
-              aria-expanded={menuOpen}
-              title="Menu"
-            >
-              {hamburgerIcon}
-            </button>
+            <div style={mobileLeftStyle}>
+              <Link
+                to="/"
+                style={homeLinkStyle}
+                title={t("common.home")}
+                aria-label={t("common.home")}
+              >
+                {homeIcon}
+              </Link>
+            </div>
+            <div style={mobileCenterStyle}>
+              <button
+                type="button"
+                style={hamburgerButtonStyle}
+                onClick={openLanguagePanel}
+                aria-label={t("common.language")}
+                aria-expanded={languagePanelOpen}
+                title={t("common.language")}
+              >
+                {languageIcon}
+              </button>
+            </div>
+            <div style={mobileRightStyle}>
+              <button
+                type="button"
+                style={hamburgerButtonStyle}
+                onClick={openMenu}
+                aria-label="Menu"
+                aria-expanded={menuOpen}
+                title="Menu"
+              >
+                {hamburgerIcon}
+              </button>
+            </div>
+            {languagePanelOpen && (
+              <>
+                <div
+                  style={overlayStyle}
+                  onClick={() => setLanguagePanelOpen(false)}
+                  aria-hidden
+                />
+                <div style={menuPanelStyleMobile}>
+                  <LanguageSwitcher variant="light" onLanguageChange={() => setLanguagePanelOpen(false)} />
+                </div>
+              </>
+            )}
             {menuOpen && (
               <>
                 <div
@@ -173,15 +242,42 @@ function Navbar() {
                   aria-hidden
                 />
                 <div style={menuPanelStyleMobile}>
-                  {rightContent}
+                  {menuPanelContent}
                 </div>
               </>
             )}
           </>
         ) : (
-          <div style={rightStyle}>
-            {rightContent}
-          </div>
+          <>
+            <div style={leftStyle}>
+              <Link to="/" style={logoLinkStyle}>
+                <img src="/SPS.png" alt="SPS Group" style={logoImgStyle} />
+              </Link>
+              <Link
+                to="/"
+                style={homeLinkStyle}
+                title={t("common.home")}
+                aria-label={t("common.home")}
+              >
+                {homeIcon}
+              </Link>
+            </div>
+            <div style={rightStyle}>
+              {rightContent}
+            </div>
+            {languagePanelOpen && (
+              <>
+                <div
+                  style={overlayStyle}
+                  onClick={() => setLanguagePanelOpen(false)}
+                  aria-hidden
+                />
+                <div style={{ ...menuPanelStyle, top: "56px", right: 0 }}>
+                  <LanguageSwitcher variant="light" onLanguageChange={() => setLanguagePanelOpen(false)} />
+                </div>
+              </>
+            )}
+          </>
         )}
       </nav>
     </>

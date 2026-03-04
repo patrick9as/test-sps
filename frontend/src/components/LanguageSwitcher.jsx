@@ -18,7 +18,7 @@ const langButtonStyle = (active) => ({
 
 const flagImgStyle = { display: "block", width: "24px", height: "16px", objectFit: "cover" };
 
-function LanguageSwitcher({ variant = "light" }) {
+function LanguageSwitcher({ variant = "light", onLanguageChange }) {
   const { locale, setLanguage } = useLanguage();
 
   const borderColor = variant === "dark" ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.6)";
@@ -30,15 +30,20 @@ function LanguageSwitcher({ variant = "light" }) {
     background: active ? bgActive : "transparent",
   });
 
+  const handleSelect = (lang) => {
+    setLanguage(lang);
+    onLanguageChange?.(lang);
+  };
+
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <button type="button" style={buttonStyle(locale === "pt-BR")} onClick={() => setLanguage("pt-BR")} title="Português">
+    <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+      <button type="button" style={buttonStyle(locale === "pt-BR")} onClick={() => handleSelect("pt-BR")} title="Português">
         <img src={FLAGS["pt-BR"]} alt="PT" style={flagImgStyle} />
       </button>
-      <button type="button" style={buttonStyle(locale === "es")} onClick={() => setLanguage("es")} title="Español">
+      <button type="button" style={buttonStyle(locale === "es")} onClick={() => handleSelect("es")} title="Español">
         <img src={FLAGS.es} alt="ES" style={flagImgStyle} />
       </button>
-      <button type="button" style={buttonStyle(locale === "en")} onClick={() => setLanguage("en")} title="English">
+      <button type="button" style={buttonStyle(locale === "en")} onClick={() => handleSelect("en")} title="English">
         <img src={FLAGS.en} alt="EN" style={flagImgStyle} />
       </button>
     </div>

@@ -50,5 +50,6 @@
   "users.passwordMismatch": "Passwords do not match.",
   "common.home": "Home",
   "common.helloUser": "Welcome, {{name}}!",
-  "common.logout": "Log out"
+  "common.logout": "Log out",
+  "common.language": "Language"
 }
