@@ -24,10 +24,12 @@ function rateLimitHandler(req, res) {
   });
 }
 
-// Rate limit global: 100 requisições por 15 min para todas as rotas
+const isTest = process.env.NODE_ENV === "test";
+
+// Rate limit global: 100 requisições por 15 min para todas as rotas (relaxado em test)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: isTest ? 10000 : 100,
   standardHeaders: true,
   handler: rateLimitHandler,
 });
