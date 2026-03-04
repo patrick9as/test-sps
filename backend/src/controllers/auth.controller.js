@@ -18,11 +18,15 @@ async function login(req, res) {
   const { email, password } = parsed.data;
   const user = userRepository.findByEmailWithPassword(email);
   if (!user) {
-    return sendError(res, 401, "auth.invalid_credentials");
+    return sendError(res, 401, "auth.invalid_credentials", {
+      remaining: req.rateLimit?.remaining ?? 0,
+    });
   }
   const match = await bcrypt.compare(password, user.passwordHash);
   if (!match) {
-    return sendError(res, 401, "auth.invalid_credentials");
+    return sendError(res, 401, "auth.invalid_credentials", {
+      remaining: req.rateLimit?.remaining ?? 0,
+    });
   }
   const secret = getJwtSecret();
   const expiresIn = getJwtExpiresIn();

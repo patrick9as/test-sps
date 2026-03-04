@@ -77,9 +77,15 @@ PORTUGUÊS
 Todas as respostas de erro usam chaves para o frontend traduzir:
 
 - Formato: `{ "error": "chave" }`. Em validação: `{ "error": "validation.invalid_body", "errors": [ { "path", "message" }, ... ] }`.
+- Login (credenciais inválidas): `{ "error": "auth.invalid_credentials", "remaining": number }` — `remaining` é a quantidade de tentativas restantes na janela de rate limit.
 - Chaves: `auth.invalid_credentials`, `auth.invalid_token`, `auth.forbidden`, `auth.email_taken`, `users.not_found`, `users.admin_cannot_be_deleted`, `users.admin_cannot_be_updated`, `users.only_admin_can_create_admin`, `validation.invalid_body`, `rate_limit.exceeded`, `internal.server_error`.
 
 ### Rate limit
 
-- Headers em todas as respostas: `RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset`.
-- Ao exceder (429): corpo com `error`, `remaining`, `limit`, `resetAt`.
+- Limite global: 100 requisições por 15 min para todas as rotas. Headers em todas as respostas: `RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset`.
+- Login: 5 tentativas (apenas falhas) por 15 min. Respostas 401 de login incluem `remaining` (tentativas restantes). Ao exceder (429): corpo com `error`, `remaining: 0`, `limit: 5`, `resetAt`.
+- Ao exceder o limite global (429): corpo com `error`, `remaining`, `limit`, `resetAt`.
+
+### Testes
+
+- Testes automatizados (incluindo cenários de rate limit) serão abordados depois; por ora o foco é a implementação.

@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const rateLimit = require("express-rate-limit");
 const authController = require("./controllers/auth.controller");
 const usersController = require("./controllers/users.controller");
 const { authMiddleware } = require("./middlewares/auth.middleware");
@@ -7,14 +8,47 @@ const { asyncHandler } = require("./utils/asyncHandler");
 
 const routes = Router();
 
+// Handler comum para respostas 429 (rate limit excedido)
+function rateLimitHandler(req, res) {
+  const info = req.rateLimit || {};
+  const resetAt =
+    info.resetTime instanceof Date
+      ? Math.floor(info.resetTime.getTime() / 1000)
+      : info.resetTime;
+  res.status(429).json({
+    error: "rate_limit.exceeded",
+    remaining: info.remaining ?? 0,
+    limit: info.limit ?? 100,
+    resetAt,
+  });
+}
+
+// Rate limit global: 100 requisições por 15 min para todas as rotas
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  handler: rateLimitHandler,
+});
+routes.use(limiter);
+
+// Rate limit de login: 5 tentativas (apenas falhas) por 15 min
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  skipSuccessfulRequests: true,
+  handler: rateLimitHandler,
+});
+
 // Rotas públicas
 routes.get("/health", (_, res) => {
   // Health check - verifica se o servidor está funcionando
   res.json({ data: { status: "ok" } });
 });
 
-// Rota de login - autenticação
-routes.post("/login", asyncHandler(authController.login));
+// Rota de login - autenticação (limitada a 5 falhas por 15 min)
+routes.post("/login", loginLimiter, asyncHandler(authController.login));
 
 // Rotas protegidas
 const usersRouter = Router();
