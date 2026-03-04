@@ -10,7 +10,8 @@ class UserService {
     return response;
   }
   async create(data) {
-    throw new Error("Not implemented");
+    const response = await api.post("/users", data);
+    return response;
   }
   async delete(id) {
     const response = await api.delete(`/users/${id}`);
