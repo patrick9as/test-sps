@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import UserService from "../services/UserService";
 import { useLanguage } from "../contexts/LanguageContext";
 import Grid from "../components/Grid";
@@ -43,16 +44,15 @@ function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [deleteError, setDeleteError] = useState(null);
 
   const handleDelete = async (user) => {
-    setDeleteError(null);
     try {
       await UserService.delete(user.id);
       setUsers((prev) => prev.filter((u) => u.id !== user.id));
+      toast.success(t("users.deleted"));
     } catch (err) {
       const key = err.response?.data?.error;
-      setDeleteError(key ? t(key) : t("internal.server_error"));
+      toast.error(key ? t(key) : t("internal.server_error"));
     }
   };
 
@@ -98,9 +98,6 @@ function Users() {
   return (
     <div style={pageStyle}>
       <h1 style={titleStyle}>{t("users.pageTitle")}</h1>
-      {deleteError && (
-        <p style={{ color: "#c00", marginBottom: "1rem" }}>{deleteError}</p>
-      )}
       {users.length === 0 ? (
         <p>{t("users.empty")}</p>
       ) : (
