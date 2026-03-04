@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const AUTH_TOKEN_KEY = "auth_token";
+export const AUTH_USER_KEY = "auth_user";
 
 const baseURL = import.meta.env.VITE_SERVER_URL || "";
 

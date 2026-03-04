@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { AUTH_TOKEN_KEY } from "../services/api";
+import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "../services/api";
 import AuthService from "../services/AuthService";
 
 const AuthContext = createContext(null);
@@ -9,26 +9,31 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    const storedUser = localStorage.getItem(AUTH_USER_KEY);
     if (token) {
-      setUser({ token });
+      const parsed = storedUser ? JSON.parse(storedUser) : null;
+      setUser(parsed ? { token, ...parsed } : { token });
     }
   }, []);
 
   const login = async (credentials) => {
     const { data } = await AuthService.login(credentials);
     const token = data.token;
+    const userData = data.user || {};
     localStorage.setItem(AUTH_TOKEN_KEY, token);
-    setUser({ token });
+    if (userData.id) localStorage.setItem(AUTH_USER_KEY, JSON.stringify(userData));
+    setUser({ token, ...userData });
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(AUTH_USER_KEY);
   };
 
   const value = {
     user,
-    isLoggedIn: !!user,
+    isLoggedIn: !!user?.token,
     login,
     logout,
   };

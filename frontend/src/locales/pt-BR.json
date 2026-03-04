@@ -29,5 +29,6 @@
   "users.empty": "Nenhum usuário cadastrado.",
   "users.edit": "Editar",
   "users.delete": "Excluir",
+  "common.helloUser": "Bem-vindo, {{name}}",
   "common.logout": "Sair"
 }

@@ -24,8 +24,14 @@ export function LanguageProvider({ children }) {
     localStorage.setItem(LOCALE_KEY, newLocale);
   };
 
-  const t = (key) => {
-    return dictionary[key] ?? key;
+  const t = (key, vars) => {
+    let text = dictionary[key] ?? key;
+    if (vars && typeof vars === "object") {
+      Object.entries(vars).forEach(([k, v]) => {
+        text = text.replace(new RegExp(`\\{\\{${k}\\}\\}`, "g"), String(v));
+      });
+    }
+    return text;
   };
 
   const value = { locale, setLanguage, t };

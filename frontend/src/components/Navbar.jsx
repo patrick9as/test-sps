@@ -32,7 +32,7 @@ const logoutButtonStyle = {
 
 function Navbar() {
   const navigate = useNavigate();
-  const { isLoggedIn, logout } = useAuth();
+  const { user, isLoggedIn, logout } = useAuth();
   const { t } = useLanguage();
 
   const handleLogout = () => {
@@ -46,6 +46,11 @@ function Navbar() {
         <img src="/SPS.png" alt="SPS Group" style={logoImgStyle} />
       </Link>
       <div style={rightStyle}>
+        {isLoggedIn && user?.name && (
+          <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.95rem" }}>
+            {t("common.helloUser", { name: user.name },)}
+          </span>
+        )}
         <LanguageSwitcher variant="light" />
         {isLoggedIn && (
           <button type="button" style={logoutButtonStyle} onClick={handleLogout}>

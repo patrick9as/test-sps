@@ -50,8 +50,9 @@ async function login(req, res) {
     secret,
     { expiresIn }
   );
-  
-  res.status(200).json({ data: { token } });
+
+  const { passwordHash: _, ...publicUser } = user;
+  res.status(200).json({ data: { token, user: publicUser } });
 }
 
 module.exports = { login };

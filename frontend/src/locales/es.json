@@ -29,5 +29,6 @@
   "users.empty": "No hay usuarios.",
   "users.edit": "Editar",
   "users.delete": "Eliminar",
+  "common.helloUser": "Bienvenido, {{name}}",
   "common.logout": "Salir"
 }
