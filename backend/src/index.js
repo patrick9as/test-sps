@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 if (!process.env.PORT || !process.env.JWT_SECRET) {
+  // Verifica se as variáveis de ambiente necessárias estão definidas
   console.error("Missing required env: PORT and JWT_SECRET must be set.");
   process.exit(1);
 }
@@ -19,12 +20,15 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
+  windowMs: 15 * 60 * 1000, // Define o tempo de janela de 15 minutos para novas requisições
+  max: 100, // Define o número máximo de requisições permitidas
+  standardHeaders: true, // Define se os headers padrão devem ser usados
   handler: (req, res) => {
+    // Obtém as informações da requisição de rate limit
     const info = req.rateLimit || {};
-    const resetAt =
+
+    // Define o timestamp de reset da janela de rate limit
+    const resetAt = 
       info.resetTime instanceof Date
         ? Math.floor(info.resetTime.getTime() / 1000)
         : info.resetTime;
