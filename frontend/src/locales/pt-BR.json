@@ -6,6 +6,9 @@
   "users.not_found": "Usuário não encontrado.",
   "users.deleted": "Usuário excluído.",
   "users.cannot_delete_self": "Você não pode excluir sua própria conta.",
+  "users.only_admin_can_modify_others": "Apenas administradores podem editar ou excluir outros usuários.",
+  "users.default_user_cannot_be_modified": "O usuário padrão não pode ser modificado.",
+  "users.default_user_cannot_be_deleted": "O usuário padrão não pode ser excluído.",
   "users.admin_cannot_be_deleted": "O administrador não pode ser excluído.",
   "users.admin_cannot_be_updated": "O administrador não pode ser atualizado.",
   "users.only_admin_can_create_admin": "Apenas administradores podem criar outros administradores.",
@@ -25,5 +28,6 @@
   "users.loading": "Carregando...",
   "users.empty": "Nenhum usuário cadastrado.",
   "users.edit": "Editar",
+  "users.delete": "Excluir",
   "common.logout": "Sair"
 }

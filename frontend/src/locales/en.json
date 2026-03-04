@@ -6,6 +6,9 @@
   "users.not_found": "User not found.",
   "users.deleted": "User deleted.",
   "users.cannot_delete_self": "You cannot delete your own account.",
+  "users.only_admin_can_modify_others": "Only administrators can edit or delete other users.",
+  "users.default_user_cannot_be_modified": "The default user cannot be modified.",
+  "users.default_user_cannot_be_deleted": "The default user cannot be deleted.",
   "users.admin_cannot_be_deleted": "The administrator cannot be deleted.",
   "users.admin_cannot_be_updated": "The administrator cannot be updated.",
   "users.only_admin_can_create_admin": "Only administrators can create other administrators.",
@@ -25,5 +28,6 @@
   "users.loading": "Loading...",
   "users.empty": "No users found.",
   "users.edit": "Edit",
+  "users.delete": "Delete",
   "common.logout": "Log out"
 }

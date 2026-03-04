@@ -12,7 +12,8 @@ class UserService {
     throw new Error("Not implemented");
   }
   async delete(id) {
-    throw new Error("Not implemented");
+    const response = await api.delete(`/users/${id}`);
+    return response;
   }
   async update(id, data) {
     throw new Error("Not implemented");

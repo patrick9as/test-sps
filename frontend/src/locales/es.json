@@ -6,6 +6,9 @@
   "users.not_found": "Usuario no encontrado.",
   "users.deleted": "Usuario eliminado.",
   "users.cannot_delete_self": "No puedes eliminar tu propia cuenta.",
+  "users.only_admin_can_modify_others": "Solo los administradores pueden editar o eliminar otros usuarios.",
+  "users.default_user_cannot_be_modified": "El usuario predeterminado no puede ser modificado.",
+  "users.default_user_cannot_be_deleted": "El usuario predeterminado no puede ser eliminado.",
   "users.admin_cannot_be_deleted": "El administrador no puede ser eliminado.",
   "users.admin_cannot_be_updated": "El administrador no puede ser actualizado.",
   "users.only_admin_can_create_admin": "Solo los administradores pueden crear otros administradores.",
@@ -25,5 +28,6 @@
   "users.loading": "Cargando...",
   "users.empty": "No hay usuarios.",
   "users.edit": "Editar",
+  "users.delete": "Eliminar",
   "common.logout": "Salir"
 }
