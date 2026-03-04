@@ -81,7 +81,7 @@ async function remove(req, res) {
   if (!existed) {
     return sendError(res, 404, "users.not_found");
   }
-  res.status(204).send();
+  res.status(200).json({ message: "users.deleted" });
 }
 
 module.exports = { list, getById, create, update, remove };
