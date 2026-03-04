@@ -8,7 +8,6 @@
     "start": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:run:headed": "cypress run --headed --browser chrome"
   },
