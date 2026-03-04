@@ -39,11 +39,18 @@ const buttonStyle = {
   fontSize: "1rem",
 };
 
+const errorMessages = {
+  "auth.invalid_credentials": "Email ou senha inválidos.",
+  "validation.invalid_body": "Verifique os dados informados.",
+  "rate_limit.exceeded": "Muitas tentativas. Tente novamente mais tarde.",
+};
+
 function SignIn() {
   const navigate = useNavigate();
   const { login, isLoggedIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
   if (isLoggedIn) {
     return <Navigate to="/users" replace />;
@@ -51,8 +58,14 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login({ email, password });
-    navigate("/users", { replace: true });
+    setError(null);
+    try {
+      await login({ email, password });
+      navigate("/users", { replace: true });
+    } catch (err) {
+      const key = err.response?.data?.error;
+      setError(errorMessages[key] || "Não foi possível entrar. Tente novamente.");
+    }
   };
 
   return (
@@ -86,6 +99,11 @@ function SignIn() {
               style={inputStyle}
             />
           </div>
+          {error && (
+            <p style={{ color: "#c00", marginBottom: "0.75rem", fontSize: "0.9rem" }}>
+              {error}
+            </p>
+          )}
           <button type="submit" style={buttonStyle}>
             Entrar
           </button>

@@ -1,10 +1,9 @@
-import axios from "axios";
+import api from "./api";
 
 class UserService {
   async list() {
-    const baseURL = import.meta.env.VITE_SERVER_URL || "";
-    const users = await axios.get(`${baseURL}/users`);
-    return users;
+    const response = await api.get("/users");
+    return response;
   }
   async get(id) {
     throw new Error("Not implemented");
