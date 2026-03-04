@@ -23,7 +23,7 @@ async function login(req, res) {
   const { email, password } = parsed.data;
 
   // Busca o usuário pelo email
-  const user = userRepository.findByEmailWithPassword(email);
+  const user = await userRepository.findByEmailWithPassword(email);
 
   // Se o usuário não for encontrado, retorna um erro 401 com as tentativas restantes
   if (!user) {
