@@ -38,6 +38,6 @@
   "users.typeAdmin": "Administrador",
   "users.typeUser": "Usuário",
   "users.newPasswordOptional": "Nova senha (deixe em branco para não alterar)",
-  "common.helloUser": "Bem-vindo, {{name}}",
+  "common.helloUser": "Bem-vindo, {{name}}!",
   "common.logout": "Sair"
 }

@@ -38,6 +38,6 @@
   "users.typeAdmin": "Administrator",
   "users.typeUser": "User",
   "users.newPasswordOptional": "New password (leave blank to keep current)",
-  "common.helloUser": "Welcome, {{name}}",
+  "common.helloUser": "Welcome, {{name}}!",
   "common.logout": "Log out"
 }
