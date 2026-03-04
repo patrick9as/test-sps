@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-
-const AUTH_KEY = "auth_user";
+import { AUTH_TOKEN_KEY } from "../services/api";
+import AuthService from "../services/AuthService";
 
 const AuthContext = createContext(null);
 
@@ -8,26 +8,22 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem(AUTH_KEY);
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        localStorage.removeItem(AUTH_KEY);
-      }
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (token) {
+      setUser({ token });
     }
   }, []);
 
-  const login = (credentials) => {
-    const mockUser = { email: credentials?.email ?? "user@mock", isLoggedIn: true };
-    setUser(mockUser);
-    localStorage.setItem(AUTH_KEY, JSON.stringify(mockUser));
-    return Promise.resolve({ success: true });
+  const login = async (credentials) => {
+    const { data } = await AuthService.login(credentials);
+    const token = data.token;
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    setUser({ token });
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem(AUTH_TOKEN_KEY);
   };
 
   const value = {
