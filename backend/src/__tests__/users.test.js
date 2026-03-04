@@ -232,7 +232,7 @@ describe("CRUD de usuários", () => {
         .set("Authorization", `Bearer ${userToken}`)
         .send({ name: "Qualquer" });
       expect(res.status).toBe(403);
-      expect(res.body.error).toBe(ERROR_KEYS.AUTH_FORBIDDEN);
+      expect(res.body.error).toBe(ERROR_KEYS.USERS_ONLY_ADMIN_CAN_MODIFY_OTHERS);
     });
 
     it("admin pode atualizar outro usuário", async () => {
@@ -250,7 +250,7 @@ describe("CRUD de usuários", () => {
         .set("Authorization", `Bearer ${adminToken}`)
         .send({ name: "Tentativa" });
       expect(res.status).toBe(403);
-      expect(res.body.error).toBe(ERROR_KEYS.USERS_ADMIN_CANNOT_BE_UPDATED);
+      expect(res.body.error).toBe(ERROR_KEYS.USERS_DEFAULT_USER_CANNOT_BE_MODIFIED);
     });
 
     it("PUT /users/:id inexistente retorna 404", async () => {
@@ -308,7 +308,7 @@ describe("CRUD de usuários", () => {
         .delete(`/users/${adminId}`)
         .set("Authorization", `Bearer ${tokenOutroAdmin}`);
       expect(res.status).toBe(403);
-      expect(res.body.error).toBe(ERROR_KEYS.USERS_ADMIN_CANNOT_BE_DELETED);
+      expect(res.body.error).toBe(ERROR_KEYS.USERS_DEFAULT_USER_CANNOT_BE_DELETED);
     });
 
     it("admin pode deletar outro usuário retorna 200", async () => {

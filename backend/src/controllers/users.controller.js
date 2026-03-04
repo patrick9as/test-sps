@@ -61,7 +61,7 @@ async function update(req, res) {
   const { id } = req.params;
   // Apenas o admin padrão não pode ser alterado; outros admins podem alterar o próprio cargo (ex.: admin → user).
   if (userRepository.isDefaultAdminId(id)) {
-    return sendError(res, 403, ERROR_KEYS.USERS_ADMIN_CANNOT_BE_UPDATED);
+    return sendError(res, 403, ERROR_KEYS.USERS_DEFAULT_USER_CANNOT_BE_MODIFIED);
   }
 
   // Valida o corpo da requisição usando o schema de atualização de usuário
@@ -121,8 +121,7 @@ async function remove(req, res) {
     return sendError(res, 403, ERROR_KEYS.USERS_CANNOT_DELETE_SELF);
   }
   if (userRepository.isDefaultAdminId(id)) {
-    // Retorna um erro 403 se o usuário for o admin padrão e tentar excluir
-    return sendError(res, 403, ERROR_KEYS.USERS_ADMIN_CANNOT_BE_DELETED);
+    return sendError(res, 403, ERROR_KEYS.USERS_DEFAULT_USER_CANNOT_BE_DELETED);
   }
 
   // Verifica se o usuário existe

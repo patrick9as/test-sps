@@ -85,7 +85,7 @@ Todas as respostas de erro usam chaves para o frontend traduzir:
 
 - Formato: `{ "error": "chave" }`. Em validação: `{ "error": "validation.invalid_body", "data": [ { "path", "message" }, ... ] }`.
 - Login (credenciais inválidas): `{ "error": "auth.invalid_credentials", "remaining": number }` — `remaining` é a quantidade de tentativas restantes na janela de rate limit.
-- Chaves: `auth.invalid_credentials`, `auth.invalid_token`, `auth.forbidden`, `auth.email_taken`, `users.not_found`, `users.deleted`, `users.cannot_delete_self`, `users.admin_cannot_be_deleted`, `users.admin_cannot_be_updated`, `users.only_admin_can_create_admin`, `validation.invalid_body`, `validation.password_min_length`, `validation.password_uppercase`, `validation.password_number`, `validation.password_special`, `rate_limit.exceeded`, `internal.server_error`.
+- Chaves: `auth.invalid_credentials`, `auth.invalid_token`, `auth.forbidden`, `auth.email_taken`, `users.not_found`, `users.deleted`, `users.cannot_delete_self`, `users.only_admin_can_modify_others`, `users.default_user_cannot_be_modified`, `users.default_user_cannot_be_deleted`, `users.only_admin_can_create_admin`, `validation.invalid_body`, `validation.password_min_length`, `validation.password_uppercase`, `validation.password_number`, `validation.password_special`, `rate_limit.exceeded`, `internal.server_error`.
 - Senha (criação e atualização de usuário): mínimo 7 caracteres, pelo menos uma letra maiúscula, um número e um caractere especial. Em caso de falha, `data[].message` pode ser uma das chaves de senha acima.
 
 ### Rate limit
