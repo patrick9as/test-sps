@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "overrides": {
+    "glob": "^13.0.0"
+  },
   "scripts": {
     "dev": " nodemon --inspect=7000 src/index.js",
     "test": "jest",
@@ -31,6 +34,6 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.1.0",
-    "supertest": "^6.3.4"
+    "supertest": "^7.1.3"
   }
 }

@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "start": "vite",
-    "build": "vite build",
+    "dev": "node scripts/check-env.js && vite",
+    "start": "node scripts/check-env.js && vite",
+    "build": "node scripts/check-env.js && vite build",
     "preview": "vite preview",
     "cy:run": "cypress run",
     "cy:run:headed": "cypress run --headed --browser chrome"
