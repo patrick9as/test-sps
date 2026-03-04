@@ -1,7 +1,8 @@
 require("dotenv").config();
 
-// Email do admin padrão
+// Usuário admin padrão (não excluível / não alterável)
 const ADMIN_EMAIL = "admin@spsgroup.com.br";
+const DEFAULT_ADMIN_ID = "default-admin";
 
 // Chaves de erro/mensagem para i18n (frontend).
 const ERROR_KEYS = {
@@ -36,6 +37,7 @@ const getJwtExpiresIn = () => process.env.JWT_EXPIRES_IN || "24h";
 
 module.exports = {
   ADMIN_EMAIL,
+  DEFAULT_ADMIN_ID,
   ERROR_KEYS,
   getJwtSecret,
   getJwtExpiresIn,
