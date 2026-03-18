@@ -4,6 +4,7 @@ const multer = require("multer");
 const { ERROR_KEYS } = require("./config/constants");
 const authController = require("./controllers/auth.controller");
 const usersController = require("./controllers/users.controller");
+const attachmentsController = require("./controllers/attachments.controller");
 const { authMiddleware } = require("./middlewares/auth.middleware");
 const { requireAdminForOther } = require("./middlewares/admin.middleware");
 const { loginLimiter } = require("./middlewares/loginRateLimit");
@@ -74,6 +75,22 @@ function uploadSingleProfilePicture(req, res, next) {
   });
 }
 
+const uploadAttachment = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+});
+
+function uploadSingleAttachment(req, res, next) {
+  uploadAttachment.single("file")(req, res, (err) => {
+    if (err) {
+      return sendError(res, 400, ERROR_KEYS.VALIDATION_INVALID_BODY, {
+        data: [{ path: "file", message: ERROR_KEYS.VALIDATION_INVALID_BODY }],
+      });
+    }
+    return next();
+  });
+}
+
 // Rotas de usuários
 usersRouter.get("/", asyncHandler(usersController.list));
 usersRouter.get("/:id", asyncHandler(usersController.getById));
@@ -90,6 +107,39 @@ usersRouter.get(
   requireAdminForOther,
   asyncHandler(usersController.getProfilePicture),
 );
+
+usersRouter.get(
+  "/:id/attachments",
+  requireAdminForOther,
+  asyncHandler(attachmentsController.list),
+);
+usersRouter.post(
+  "/:id/attachments",
+  requireAdminForOther,
+  uploadSingleAttachment,
+  asyncHandler(attachmentsController.create),
+);
+usersRouter.get(
+  "/:id/attachments/:attachmentId",
+  requireAdminForOther,
+  asyncHandler(attachmentsController.getById),
+);
+usersRouter.get(
+  "/:id/attachments/:attachmentId/content",
+  requireAdminForOther,
+  asyncHandler(attachmentsController.downloadContent),
+);
+usersRouter.put(
+  "/:id/attachments/:attachmentId",
+  requireAdminForOther,
+  asyncHandler(attachmentsController.update),
+);
+usersRouter.delete(
+  "/:id/attachments/:attachmentId",
+  requireAdminForOther,
+  asyncHandler(attachmentsController.remove),
+);
+
 usersRouter.delete("/:id", requireAdminForOther, asyncHandler(usersController.remove));
 // Adiciona as rotas de usuários ao router principal
 routes.use("/users", usersRouter);

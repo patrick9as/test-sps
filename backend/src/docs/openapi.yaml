@@ -36,6 +36,28 @@ components:
           description: URL relativa para obter a foto de perfil do usuário
       required: [id, name, email, type]
 
+    Attachment:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        filename:
+          type: string
+        mime:
+          type: string
+        size:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        downloadUrl:
+          type: string
+          description: URL relativa para baixar o arquivo (binário)
+      required: [id, userId, filename, mime, size, createdAt, updatedAt, downloadUrl]
+
     HealthData:
       type: object
       properties:
@@ -101,6 +123,13 @@ components:
           type: string
           minLength: 7
           description: "Mínimo 7 caracteres, 1 maiúscula, 1 número, 1 caractere especial"
+
+    UpdateAttachmentRequest:
+      type: object
+      properties:
+        filename:
+          type: string
+          minLength: 1
 
     ErrorResponse:
       type: object
@@ -351,3 +380,173 @@ paths:
           description: Sem permissão
         "404":
           description: Usuário não encontrado (ou sem foto)
+
+  /users/{id}/attachments:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Listar anexos do usuário
+      description: Retorna metadados dos anexos do usuário. Admin pode listar de qualquer usuário; user apenas do próprio.
+      responses:
+        "200":
+          description: Lista de anexos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Attachment"
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Sem permissão
+        "404":
+          description: Usuário não encontrado
+    post:
+      summary: Upload de anexo
+      description: Faz upload de um anexo (multipart/form-data). Admin pode enviar para qualquer usuário; user apenas para si mesmo.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Anexo criado (metadados)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Attachment"
+        "400":
+          description: Body inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Sem permissão
+        "404":
+          description: Usuário não encontrado
+
+  /users/{id}/attachments/{attachmentId}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Obter metadados do anexo
+      responses:
+        "200":
+          description: Anexo (metadados)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Attachment"
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Sem permissão
+        "404":
+          description: Usuário não encontrado (ou anexo inexistente)
+    put:
+      summary: Atualizar metadados do anexo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAttachmentRequest"
+      responses:
+        "200":
+          description: Anexo atualizado (metadados)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Attachment"
+        "400":
+          description: Body inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Sem permissão
+        "404":
+          description: Usuário não encontrado (ou anexo inexistente)
+    delete:
+      summary: Excluir anexo
+      responses:
+        "200":
+          description: Anexo excluído
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Sem permissão
+        "404":
+          description: Usuário não encontrado (ou anexo inexistente)
+
+  /users/{id}/attachments/{attachmentId}/content:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Baixar anexo (binário)
+      description: Retorna o binário do anexo.
+      responses:
+        "200":
+          description: Arquivo (binário)
+          content:
+            application/octet-stream: {}
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Sem permissão
+        "404":
+          description: Usuário não encontrado (ou anexo inexistente)
