@@ -65,6 +65,50 @@ const inputStyle = {
   boxSizing: "border-box",
 };
 
+const attachmentCardStyle = {
+  height: "100%",
+};
+
+const attachmentCardContentStyle = {
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+  gap: "0.5rem",
+  minWidth: 0,
+};
+
+const filenameStyle = {
+  display: "block",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  minWidth: 0,
+};
+
+const actionsRowStyle = {
+  display: "flex",
+  gap: "0.5rem",
+  flexWrap: "nowrap",
+  marginTop: "auto",
+  paddingTop: "0.5rem",
+};
+
+const attachmentActionButtonStyle = {
+  ...buttonSecondaryStyle,
+  padding: "0.6rem 0.85rem",
+  fontSize: "0.9rem",
+  whiteSpace: "nowrap",
+  flex: "1 1 0",
+};
+
+const attachmentDangerButtonStyle = {
+  ...dangerButtonStyle,
+  padding: "0.6rem 0.85rem",
+  fontSize: "0.9rem",
+  whiteSpace: "nowrap",
+  flex: "1 1 0",
+};
+
 function formatSize(size) {
   if (!Number.isFinite(size)) return "-";
   if (size < 1024) return `${size} B`;
@@ -263,6 +307,10 @@ function UserAttachments() {
       ) : (
         <Grid
           items={attachments}
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 360px))",
+            justifyContent: "start",
+          }}
           renderItem={(attachment) => (
             <Card
               padding="1rem"
@@ -270,10 +318,13 @@ function UserAttachments() {
               boxShadow="0 1px 4px rgba(0,0,0,0.1)"
               border="1px solid #eee"
               minWidth={undefined}
+              style={attachmentCardStyle}
             >
-              <div style={{ display: "grid", gap: "0.5rem" }}>
+              <div style={attachmentCardContentStyle}>
                 <div>
-                  <strong>{attachment.filename}</strong>
+                  <strong style={filenameStyle} title={attachment.filename}>
+                    {attachment.filename}
+                  </strong>
                 </div>
                 <div style={{ fontSize: "0.9rem", color: "#666" }}>
                   {t("attachments.fileType")}: {attachment.mime}
@@ -287,10 +338,10 @@ function UserAttachments() {
                 <div style={{ fontSize: "0.9rem", color: "#666" }}>
                   {t("attachments.updatedAt")}: {formatDate(attachment.updatedAt)}
                 </div>
-                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.5rem" }}>
+                <div style={actionsRowStyle}>
                   <button
                     type="button"
-                    style={buttonSecondaryStyle}
+                    style={attachmentActionButtonStyle}
                     onClick={() => handleDownload(attachment)}
                   >
                     {t("attachments.download")}
@@ -299,7 +350,7 @@ function UserAttachments() {
                     <>
                       <button
                         type="button"
-                        style={buttonSecondaryStyle}
+                        style={attachmentActionButtonStyle}
                         onClick={() => {
                           setAttachmentToRename(attachment);
                           setRenameValue(attachment.filename);
@@ -309,7 +360,7 @@ function UserAttachments() {
                       </button>
                       <button
                         type="button"
-                        style={dangerButtonStyle}
+                        style={attachmentDangerButtonStyle}
                         onClick={() => setAttachmentToDelete(attachment)}
                       >
                         {t("attachments.delete")}

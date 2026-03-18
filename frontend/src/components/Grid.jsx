@@ -4,7 +4,7 @@
  */
 import React from "react";
 
-function Grid({ items = [], renderItem, keyExtractor = (item) => item.id, ...rest }) {
+function Grid({ items = [], renderItem, keyExtractor = (item) => item.id, style, ...rest }) {
   if (!items.length) return null;
 
   const gridStyle = {
@@ -17,7 +17,7 @@ function Grid({ items = [], renderItem, keyExtractor = (item) => item.id, ...res
   const cellStyle = { minWidth: 0 };
 
   return (
-    <div style={{ ...gridStyle, ...rest.style }} {...rest}>
+    <div style={{ ...gridStyle, ...style }} {...rest}>
       {items.map((item) => (
         <div key={keyExtractor(item)} style={cellStyle}>{renderItem(item)}</div>
       ))}
