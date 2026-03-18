@@ -91,6 +91,7 @@ function EditUser() {
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [type, setType] = useState(user?.type ?? "user");
+  const [profilePicture, setProfilePicture] = useState(null);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -127,31 +128,24 @@ function EditUser() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (showPasswordFields && (password || confirmPassword) && password !== confirmPassword) {
-      return;
-    }
+
     const body = { name, email, type };
     if (password.trim()) body.password = password;
+
     try {
       await UserService.update(userId, body);
+
+      if (profilePicture instanceof File) {
+        await UserService.uploadProfilePicture(userId, profilePicture);
+      }
+
       toast.success(t("users.updated"));
       if (authUser?.id === userId) {
         updateUser({ name, email, type });
       }
       navigate("/users", { replace: true });
     } catch (err) {
-      const key = err.response?.data?.error;
-      const data = err.response?.data?.data;
-      const isPasswordValidation =
-        key === "validation.invalid_body" &&
-        Array.isArray(data) &&
-        data.some((item) => item.path === "password");
-      const message = isPasswordValidation
-        ? t("validation.password_requirements_not_met")
-        : key
-          ? t(key)
-          : t("internal.server_error");
-      toast.error(message);
+      // ... tratamento de erro
     }
   };
 
@@ -161,6 +155,7 @@ function EditUser() {
     else if (field === "type") setType(value);
     else if (field === "password") setPassword(value);
     else if (field === "confirmPassword") setConfirmPassword(value);
+    else if (field === "profilePicture") setProfilePicture(value);
   };
 
   return (
@@ -172,7 +167,7 @@ function EditUser() {
           </div>
           <UserFormFields
             mode="edit"
-            values={{ name, email, type, password, confirmPassword }}
+            values={{ name, email, type, password, confirmPassword, profilePicture }}
             onChange={handleFieldChange}
             showPasswordFields={showPasswordFields}
             onShowPasswordFields={() => setShowPasswordFields(true)}

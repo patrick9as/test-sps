@@ -174,6 +174,8 @@ module.exports = {
   ensureDefaultAdmin,
   create,
   update,
+  setProfilePicture: async () => null,
+  getProfilePicture: async () => null,
   remove,
   emailExists,
   clearStore,

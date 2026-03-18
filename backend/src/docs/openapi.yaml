@@ -31,6 +31,9 @@ components:
         type:
           type: string
           enum: [admin, user]
+        profilePictureUrl:
+          type: string
+          description: URL relativa para obter a foto de perfil do usuário
       required: [id, name, email, type]
 
     HealthData:
@@ -288,3 +291,63 @@ paths:
           description: Não pode excluir a si mesmo ou o admin padrão
         "404":
           description: Usuário não encontrado
+
+  /users/{id}/profile-picture:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Upload da foto de perfil
+      description: Faz upload da foto de perfil do usuário (multipart/form-data). Admin pode enviar para qualquer usuário; user apenas para si mesmo. Usuário admin padrão não pode ser alterado.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [profilePicture]
+              properties:
+                profilePicture:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Foto atualizada (retorna usuário público)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Body inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Sem permissão ou usuário padrão não pode ser modificado
+        "404":
+          description: Usuário não encontrado
+    get:
+      summary: Obter foto de perfil
+      description: Retorna o binário da foto de perfil do usuário.
+      responses:
+        "200":
+          description: Imagem (binário)
+          content:
+            image/jpeg: {}
+            image/png: {}
+            image/webp: {}
+        "401":
+          description: Token ausente ou inválido
+        "403":
+          description: Sem permissão
+        "404":
+          description: Usuário não encontrado (ou sem foto)

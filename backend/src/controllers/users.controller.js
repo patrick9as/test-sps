@@ -8,6 +8,12 @@ const {
 } = require("../validators/user.schema");
 const { sendError } = require("../utils/errors");
 
+const ALLOWED_PROFILE_PICTURE_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+]);
+
 async function list(_, res) {
   // Busca todos os usuários
   const users = await userRepository.findAll();
@@ -64,6 +70,7 @@ async function update(req, res) {
     return sendError(res, 403, ERROR_KEYS.USERS_DEFAULT_USER_CANNOT_BE_MODIFIED);
   }
 
+
   // Valida o corpo da requisição usando o schema de atualização de usuário
   const parsed = updateUserSchema.safeParse(req.body);
   if (!parsed.success) {
@@ -112,6 +119,58 @@ async function update(req, res) {
   res.json({ data: user });
 }
 
+async function uploadProfilePicture(req, res) {
+  const { id } = req.params;
+
+  if (userRepository.isDefaultAdminId(id)) {
+    return sendError(res, 403, ERROR_KEYS.USERS_DEFAULT_USER_CANNOT_BE_MODIFIED);
+  }
+
+  const existing = await userRepository.findByIdWithPassword(id);
+  if (!existing) {
+    return sendError(res, 404, ERROR_KEYS.USERS_NOT_FOUND);
+  }
+
+  const file = req.file;
+  if (!file) {
+    return sendError(res, 400, ERROR_KEYS.VALIDATION_INVALID_BODY, {
+      data: [{ path: "profilePicture", message: ERROR_KEYS.VALIDATION_INVALID_BODY }],
+    });
+  }
+
+  if (!ALLOWED_PROFILE_PICTURE_MIME_TYPES.has(file.mimetype)) {
+    return sendError(res, 400, ERROR_KEYS.VALIDATION_INVALID_BODY, {
+      data: [{ path: "profilePicture", message: ERROR_KEYS.VALIDATION_INVALID_BODY }],
+    });
+  }
+
+  await userRepository.setProfilePicture(id, {
+    mime: file.mimetype,
+    data: file.buffer,
+  });
+
+  const user = await userRepository.findById(id);
+  return res.json({ data: user });
+}
+
+async function getProfilePicture(req, res) {
+  const { id } = req.params;
+
+  const existing = await userRepository.findByIdWithPassword(id);
+  if (!existing) {
+    return sendError(res, 404, ERROR_KEYS.USERS_NOT_FOUND);
+  }
+
+  const picture = await userRepository.getProfilePicture(id);
+  if (!picture) {
+    return sendError(res, 404, ERROR_KEYS.USERS_NOT_FOUND);
+  }
+
+  res.setHeader("Content-Type", picture.mime);
+  res.setHeader("Cache-Control", "no-store");
+  return res.status(200).send(picture.data);
+}
+
 async function remove(req, res) {
   // Exclui o usuário pelo ID passado na URL
   const { id } = req.params;
@@ -135,4 +194,12 @@ async function remove(req, res) {
   res.status(200).json({ message: ERROR_KEYS.USERS_DELETED });
 }
 
-module.exports = { list, getById, create, update, remove };
+module.exports = {
+  list,
+  getById,
+  create,
+  update,
+  uploadProfilePicture,
+  getProfilePicture,
+  remove,
+};

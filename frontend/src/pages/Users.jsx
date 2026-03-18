@@ -3,7 +3,7 @@
  * Lista usuários em cards, com filtro por tipo (Todos / Admin / User), FAB para novo usuário,
  * modal de criação, confirmação antes de excluir e links para edição. Layout responsivo (mobile: FAB e padding).
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import UserService from "../services/UserService";
@@ -14,6 +14,7 @@ import Grid from "../components/Grid";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
 import UserFormFields from "../components/UserFormFields";
+import api from "../services/api";
 
 const pageStyle = {
   padding: "0.5rem 0",
@@ -102,6 +103,28 @@ const filterButtonActive = {
   color: "#fff",
 };
 
+const avatarSize = 44;
+const avatarStyle = {
+  width: `${avatarSize}px`,
+  height: `${avatarSize}px`,
+  borderRadius: "9999px",
+  objectFit: "cover",
+  border: "1px solid #eee",
+  flexShrink: 0,
+  backgroundColor: "#f5f6f7",
+};
+
+const avatarFallbackStyle = {
+  ...avatarStyle,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: 700,
+  color: "#2f73b2",
+  fontSize: "0.95rem",
+  textTransform: "uppercase",
+};
+
 const pencilIcon = (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -128,8 +151,11 @@ function Users() {
   const [createType, setCreateType] = useState("user");
   const [createPassword, setCreatePassword] = useState("");
   const [createConfirmPassword, setCreateConfirmPassword] = useState("");
+  const [createProfilePicture, setCreateProfilePicture] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
   const [filterType, setFilterType] = useState("all");
+  const [profilePictureUrls, setProfilePictureUrls] = useState({});
+  const profilePictureUrlsRef = useRef({});
 
   const canChangeType = authUser?.type === "admin";
 
@@ -145,6 +171,7 @@ function Users() {
     setCreateType("user");
     setCreatePassword("");
     setCreateConfirmPassword("");
+    setCreateProfilePicture(null);
   };
 
   const handleCreateSubmit = async (e) => {
@@ -157,8 +184,16 @@ function Users() {
         type: createType,
         password: createPassword,
       });
+
+      let createdUser = response.data.data;
+      if (createProfilePicture instanceof File) {
+        await UserService.uploadProfilePicture(createdUser.id, createProfilePicture);
+        const refreshed = await UserService.get(createdUser.id);
+        createdUser = refreshed.data.data;
+      }
+
       toast.success(t("users.created"));
-      setUsers((prev) => [...prev, response.data.data]);
+      setUsers((prev) => [...prev, createdUser]);
       setModalOpen(false);
       clearCreateForm();
     } catch (err) {
@@ -211,6 +246,44 @@ function Users() {
     return () => { cancelled = true; };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const usersWithPictures = (users || []).filter((u) => u?.profilePictureUrl);
+    usersWithPictures.forEach((u) => {
+      if (profilePictureUrlsRef.current[u.id]) return;
+
+      api
+        .get(u.profilePictureUrl, { responseType: "blob" })
+        .then((resp) => {
+          if (cancelled) return;
+          const objectUrl = URL.createObjectURL(resp.data);
+          profilePictureUrlsRef.current[u.id] = objectUrl;
+          setProfilePictureUrls((prev) => ({ ...prev, [u.id]: objectUrl }));
+        })
+        .catch(() => {
+          // silencioso: mantém fallback
+        });
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [users]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(profilePictureUrlsRef.current).forEach((url) => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch {
+          // ignore
+        }
+      });
+      profilePictureUrlsRef.current = {};
+    };
+  }, []);
+
   if (loading) {
     return (
       <div style={pageStyle}>
@@ -235,6 +308,7 @@ function Users() {
     else if (field === "type") setCreateType(value);
     else if (field === "password") setCreatePassword(value);
     else if (field === "confirmPassword") setCreateConfirmPassword(value);
+    else if (field === "profilePicture") setCreateProfilePicture(value);
   };
 
   const handleCloseModal = () => {
@@ -326,6 +400,7 @@ function Users() {
               type: createType,
               password: createPassword,
               confirmPassword: createConfirmPassword,
+              profilePicture: createProfilePicture,
             }}
             onChange={handleCreateFieldChange}
             canChangeType={canChangeType}
@@ -353,7 +428,7 @@ function Users() {
               border="1px solid #eee"
               minWidth={undefined}
             >
-              <div style={{ position: "relative", paddingRight: "3rem" }}>
+              <div style={{ position: "relative" }}>
                 <div
                   style={{
                     position: "absolute",
@@ -385,9 +460,29 @@ function Users() {
                     {closeIcon}
                   </button>
                 </div>
-                <div><strong>{user.name}</strong></div>
-                <div style={{ marginTop: "0.25rem", fontSize: "0.9rem" }}>{user.email}</div>
-                <div style={{ marginTop: "0.25rem", fontSize: "0.85rem", color: "#666" }}>{user.type}</div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem", paddingRight: "3rem" }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div><strong>{user.name}</strong></div>
+                    <div style={{ marginTop: "0.25rem", fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis" }}>{user.email}</div>
+                    <div style={{ marginTop: "0.25rem", fontSize: "0.85rem", color: "#666" }}>{user.type}</div>
+                  </div>
+                  {profilePictureUrls[user.id] ? (
+                    <img
+                      src={profilePictureUrls[user.id]}
+                      alt={t("users.profilePicture")}
+                      style={avatarStyle}
+                    />
+                  ) : (
+                    <div style={avatarFallbackStyle} aria-label={t("users.profilePicture")}>
+                      {(user?.name || "?")
+                        .split(" ")
+                        .filter(Boolean)
+                        .slice(0, 2)
+                        .map((s) => s[0])
+                        .join("")}
+                    </div>
+                  )}
+                </div>
               </div>
             </Card>
           )}

@@ -55,6 +55,7 @@
   "users.confirmNewPassword": "Confirmar nova senha",
   "users.changePassword": "Alterar senha",
   "users.passwordMismatch": "As senhas não coincidem.",
+  "users.profilePicture": "Foto de perfil",
   "common.home": "Início",
   "common.helloUser": "Bem-vindo, {{name}}!",
   "common.logout": "Sair",
