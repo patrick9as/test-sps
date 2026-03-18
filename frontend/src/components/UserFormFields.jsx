@@ -3,7 +3,7 @@
  * Modos: "create" (cadastro) e "edit" (edição, com link "Alterar senha"). Exibe barra de
  * requisitos da senha e validação em tempo real.
  */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const formGroupStyle = { marginBottom: "1rem" };
@@ -37,6 +37,19 @@ const passwordBarTrackStyle = {
   borderRadius: "4px",
   overflow: "hidden",
   marginTop: "0.5rem",
+};
+
+const imagePreviewStyle = {
+  width: "80px",
+  height: "80px",
+  borderRadius: "50%",
+  objectFit: "cover",
+  marginBottom: "1rem",
+  border: "2px solid #2f73b2",
+  display: "block",
+  marginTop: "1rem",
+  marginLeft: "auto",
+  marginRight: "auto",
 };
 const requirementRowStyle = { display: "flex", alignItems: "center", gap: "0.35rem", marginTop: "0.25rem", fontSize: "0.85rem" };
 
@@ -72,7 +85,7 @@ function UserFormFields({
   idPrefix = "user-form",
 }) {
   const { t } = useLanguage();
-  const { name, email, type, password, confirmPassword } = values;
+  const { name, email, type, password, confirmPassword, profilePicture } = values;
 
   const passwordReqs = getPasswordRequirements(password);
   const passwordMetCount = [
@@ -85,6 +98,29 @@ function UserFormFields({
   const passwordBarPercent = (passwordMetCount / 5) * 100;
 
   const handleChange = (field) => (e) => onChange(field, e.target.value);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  
+  useEffect(() => {
+    if (!profilePicture) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    // Se o profilePicture for um objeto File (novo upload)
+    if (profilePicture instanceof File) {
+      const objectUrl = URL.createObjectURL(profilePicture);
+      setPreviewUrl(objectUrl);
+
+      // Cleanup: remove a URL da memória quando o componente desmontar ou mudar
+      return () => URL.revokeObjectURL(objectUrl);
+    } 
+    
+    // Se o profilePicture já for uma string (URL vinda do banco de dados no modo edit)
+    if (typeof profilePicture === "string") {
+      setPreviewUrl(profilePicture);
+    }
+  }, [profilePicture]);
+
 
   const renderPasswordSection = () => (
     <>
@@ -166,6 +202,30 @@ function UserFormFields({
           style={inputStyle}
         />
       </div>
+      <div style={formGroupStyle}>
+        <label htmlFor={`${idPrefix}-profilePicture`} style={labelStyle}>
+          {t("users.profilePicture")}
+        </label>
+        <input 
+          id={`${idPrefix}-profilePicture`}
+          type="file" 
+          className="form-control"
+          accept="image/*"
+          // onChange={(e) => onChange("profilePicture", e.target.files[0])} // Captura o arquivo
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) onChange("profilePicture", file);
+          }}
+          style={inputStyle}
+        />
+        {previewUrl && (
+          <img 
+            src={previewUrl} 
+            alt="Preview" 
+            style={imagePreviewStyle} 
+          />
+        )}
+    </div>
       <div style={formGroupStyle}>
         <label htmlFor={`${idPrefix}-type`} style={labelStyle}>
           {t("users.type")}

@@ -4,17 +4,20 @@ const { ADMIN_EMAIL } = require("../config/constants");
 
 const DEFAULT_ADMIN_PASSWORD_PLAIN = "1234";
 
-/** @type {Map<string, { id: string; name: string; email: string; type: string; passwordHash: string }>} */
+/** @type {Map<string, { id: string; name: string; email: string; type: string; passwordHash: string; profilePicture?: { mime: string; data: Buffer } }>} */
 // Armazena os usuários em um Map
 const store = new Map();
 
 /**
  * @param {object} user
- * @returns {{ id: string; name: string; email: string; type: string }}
+ * @returns {{ id: string; name: string; email: string; type: string; profilePictureUrl?: string }}
  */
 function toPublic(user) {
   if (!user) return null;
-  const { passwordHash, ...rest } = user;
+  const { passwordHash, profilePicture, ...rest } = user;
+  if (profilePicture) {
+    rest.profilePictureUrl = `/users/${user.id}/profile-picture`;
+  }
   return rest;
 }
 
@@ -111,6 +114,28 @@ function update(id, data) {
 
 /**
  * @param {string} id
+ * @param {{ mime: string; data: Buffer }} picture
+ */
+function setProfilePicture(id, picture) {
+  const user = store.get(id);
+  if (!user) return Promise.resolve(null);
+  if (user.email === ADMIN_EMAIL) return Promise.resolve(null); // imutável
+  user.profilePicture = { mime: picture.mime, data: picture.data };
+  return Promise.resolve(toPublic(user));
+}
+
+/**
+ * @param {string} id
+ * @returns {Promise<{ mime: string; data: Buffer } | null>}
+ */
+function getProfilePicture(id) {
+  const user = store.get(id);
+  if (!user || !user.profilePicture) return Promise.resolve(null);
+  return Promise.resolve(user.profilePicture);
+}
+
+/**
+ * @param {string} id
  */
 function remove(id) {
   const user = store.get(id);
@@ -148,6 +173,8 @@ module.exports = {
   ensureDefaultAdmin,
   create,
   update,
+  setProfilePicture,
+  getProfilePicture,
   remove,
   emailExists,
   clearStore,
