@@ -77,14 +77,14 @@ function uploadSingleProfilePicture(req, res, next) {
 
 const uploadAttachment = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB por arquivo
 });
 
-function uploadSingleAttachment(req, res, next) {
-  uploadAttachment.single("file")(req, res, (err) => {
+function uploadMultipleAttachments(req, res, next) {
+  uploadAttachment.array("files", 5)(req, res, (err) => {
     if (err) {
       return sendError(res, 400, ERROR_KEYS.VALIDATION_INVALID_BODY, {
-        data: [{ path: "file", message: ERROR_KEYS.VALIDATION_INVALID_BODY }],
+        data: [{ path: "files", message: ERROR_KEYS.VALIDATION_INVALID_BODY }],
       });
     }
     return next();
@@ -116,9 +116,15 @@ usersRouter.get(
 usersRouter.post(
   "/:id/attachments",
   requireAdminForOther,
-  uploadSingleAttachment,
+  uploadMultipleAttachments,
   asyncHandler(attachmentsController.create),
 );
+// usersRouter.post(
+//   "/:id/attachments",
+//   requireAdminForOther,
+//   uploadSingleAttachment,
+//   asyncHandler(attachmentsController.create),
+// );
 usersRouter.get(
   "/:id/attachments/:attachmentId",
   requireAdminForOther,

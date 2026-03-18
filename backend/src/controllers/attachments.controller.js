@@ -35,27 +35,34 @@ async function getById(req, res) {
 
 async function create(req, res) {
   const { id: userId } = req.params;
+  
   if (!(await ensureUserExistsOr404(userId, res))) return;
 
-  const file = req.file;
-  if (!file) {
+  const files = req.files;
+  if (!files || !Array.isArray(files) || files.length === 0) {
     return sendError(res, 400, ERROR_KEYS.VALIDATION_INVALID_BODY, {
-      data: [{ path: "file", message: ERROR_KEYS.VALIDATION_INVALID_BODY }],
+      data: [{ path: "files", message: ERROR_KEYS.VALIDATION_INVALID_BODY }],
     });
   }
 
-  const created = await attachmentRepository.create(userId, {
-    filename: file.originalname,
-    mime: file.mimetype,
-    size: file.size,
-    data: file.buffer,
-  });
+  const resultData = [];
 
-  if (!created) {
-    return sendError(res, 404, ERROR_KEYS.USERS_NOT_FOUND);
+  for (const file of files) {
+    const created = await attachmentRepository.create(userId, {
+      filename: file.originalname,
+      mime: file.mimetype,
+      size: file.size,
+      data: file.buffer,
+    });
+
+    if (!created) {
+      return sendError(res, 404, ERROR_KEYS.USERS_NOT_FOUND);
+    }
+
+    resultData.push(created);
   }
 
-  return res.status(201).json({ data: created });
+  return res.status(201).json({ data: resultData });
 }
 
 async function downloadContent(req, res) {
