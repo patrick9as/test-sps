@@ -138,6 +138,12 @@ const closeIcon = (
   </svg>
 );
 
+const paperclipIcon = (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M21.44 11.05l-8.49 8.49a5 5 0 0 1-7.07-7.07l8.49-8.49a3 3 0 1 1 4.24 4.24l-8.5 8.49a1 1 0 0 1-1.41-1.41l7.78-7.78" />
+  </svg>
+);
+
 function Users() {
   const { t } = useLanguage();
   const { user: authUser } = useAuth();
@@ -440,6 +446,17 @@ function Users() {
                   }}
                 >
                   <Link
+                    to={`/users/${user.id}/attachments`}
+                    style={{
+                      ...linkStyle,
+                      display: "inline-flex",
+                      alignItems: "center",
+                    }}
+                    title={t("attachments.pageTitle")}
+                  >
+                    {paperclipIcon}
+                  </Link>
+                  <Link
                     to={`/users/${user.id}`}
                     style={{
                       ...linkStyle,
@@ -460,7 +477,7 @@ function Users() {
                     {closeIcon}
                   </button>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem", paddingRight: "3rem" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem", paddingRight: "5rem" }}>
                   <div style={{ minWidth: 0 }}>
                     <div><strong>{user.name}</strong></div>
                     <div style={{ marginTop: "0.25rem", fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis" }}>{user.email}</div>
