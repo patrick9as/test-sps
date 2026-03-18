@@ -237,6 +237,7 @@ function UserAttachments() {
             <div style={{ marginBottom: "0.75rem", fontWeight: 600 }}>{t("attachments.uploadTitle")}</div>
             <input
               type="file"
+              className="form-control"
               multiple
               onChange={(e) => setSelectedFiles(Array.from(e.target.files || []))}
               style={inputStyle}
